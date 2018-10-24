@@ -1,0 +1,22 @@
+{
+  "name": "deckbuild",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src -d dist"
+  },
+  "bin": {
+    "duck": "./cli.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "chalk": "^2.4.1",
+    "clear": "^0.1.0",
+    "minimist": "^1.2.0"
+  }
+}
