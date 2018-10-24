@@ -22,7 +22,7 @@ export const Build = args => {
 
   REQUIRED_SUBDIRS.forEach(subdir => {
     if (!existsSync(join(dir, subdir))) {
-      printAndExit(chalk.red(`Couldn\'t find a ${subdir} directory.`));
+      printAndExit(chalk.red(`Couldn\'t find ${subdir}. Exiting.`));
     }
   });
 
