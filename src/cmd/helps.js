@@ -1,11 +1,7 @@
-export const logHelp = helpString => {
-  console.log(helpString);
-
-  process.exit(0);
-};
+import { printAndExit } from "../lib/utils/logger";
 
 export const logDefaultHelp = cmds => {
-  logHelp(`
+  printAndExit(`
     Usage:
       $ duck <command>
     Available commands:
@@ -16,7 +12,7 @@ export const logDefaultHelp = cmds => {
 };
 
 export const logBuildHelp = () => {
-  logHelp(`
+  printAndExit(`
     Build the duck project in the current directory.
 
     Usage:
@@ -25,7 +21,7 @@ export const logBuildHelp = () => {
 };
 
 export const logInitHelp = () => {
-  logHelp(`
+  printAndExit(`
     Initialize a new duck project in the current directory.
 
     Usage:
