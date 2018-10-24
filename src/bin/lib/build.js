@@ -8,7 +8,4 @@ export const build = async (projectRoot) => {
   const config = readConfig(projectRoot);
   const csv = readData(projectRoot, config);
   const templates = await renderTemplates(projectRoot, config, csv);
-
-  console.log("read config and produced", config);
-  console.log("read csv and produced", csv);
 }
