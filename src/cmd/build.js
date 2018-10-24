@@ -27,6 +27,7 @@ export const Build = args => {
   });
 
   // Build
+  // BuildDecks(args.path);
 
   // Done
   printAndExit(chalk.green("Build complete!"));
