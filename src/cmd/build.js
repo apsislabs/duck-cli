@@ -1,15 +1,9 @@
 import chalk from "chalk";
+import { logBuildHelp } from "./helps";
 
 export const Build = args => {
   if (args.help) {
-    console.log(`
-      Build the duck project in the current directory.
-
-      Usage:
-        $ duck build
-    `);
-
-    process.exit(0);
+    logBuildHelp();
   }
 
   console.log(chalk.yellow("Building!"));

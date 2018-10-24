@@ -3,6 +3,7 @@ import _ from "lodash";
 import parseArgs from "minimist";
 import { Build } from "./cmd/build.js";
 import { Init } from "./cmd/init.js";
+import { logDefaultHelp } from "./cmd/helps.js";
 
 const commands = {
   init: Init,
@@ -22,21 +23,8 @@ const argv = parseArgs(process.argv.slice(2), {
 const defaultCmd = "build";
 const cmd = argv._[0];
 
-const logHelp = () => {
-  console.log(`
-    Usage:
-      $ duck <command>
-    Available commands:
-      ${_.keys(commands).join(", ")}
-    For more information run a command with the --help flag
-      $ duck <command> --help
-  `);
-
-  process.exit(0);
-};
-
 if (!cmd && argv.help) {
-  logHelp();
+  logDefaultHelp(_.keys(commands));
 }
 
 if (!cmd) {
