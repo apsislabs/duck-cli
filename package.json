@@ -27,7 +27,8 @@
     "lodash": "^4.17.11",
     "minimist": "^1.2.0",
     "ncp": "^2.0.0",
-    "papaparse": "^4.6.1"
+    "papaparse": "^4.6.1",
+    "rimraf": "^2.6.2"
   },
   "peerDependencies": {}
 }

@@ -3,9 +3,9 @@ import fs from 'fs';
 import React from 'react';
 
 import { requireComponent } from './utils/require';
-
 import { renderToStaticMarkup } from 'react-dom/server';
 
+import rimraf from 'rimraf';
 
 export const renderTemplates = (projectRoot, config, data) => {
   for (const deckKey in config) {
@@ -38,6 +38,8 @@ const deckFolder = (projectRoot, deckKey) => {
   const folder = path.join(output, deckKey);
 
   if (!fs.existsSync(output)) { fs.mkdirSync(output); }
+
+  if (fs.existsSync(folder)) { rimraf.sync(folder); }
   if (!fs.existsSync(folder)) { fs.mkdirSync(folder); }
 
   return folder;
