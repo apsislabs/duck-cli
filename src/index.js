@@ -1,9 +1,8 @@
-import pkg from "../package.json";
-import parseArgs from "minimist";
-import _ from "lodash";
-import { Init } from "./cmd/init.js";
-import { Build } from "./cmd/build.js";
 import chalk from "chalk";
+import _ from "lodash";
+import parseArgs from "minimist";
+import { Build } from "./cmd/build.js";
+import { Init } from "./cmd/init.js";
 
 const commands = {
   init: Init,
