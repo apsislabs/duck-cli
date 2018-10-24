@@ -31,7 +31,11 @@ if (!cmd && argv.help) {
 if (!cmd) {
   commands[defaultCmd](argv);
 } else if (cmd && _.has(commands, cmd)) {
-  commands[cmd](argv);
+  const promise = commands[cmd](argv);
+  if (promise) {
+    promise.then( () => console.log("promise finished") );
+  }
+  
 } else {
   console.warn(chalk.yellow(`Warning: Unknown Command: ${cmd}`));
   logDefaultHelp(availableCmds);

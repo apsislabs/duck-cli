@@ -8,7 +8,13 @@ export const requireComponent = (requirePath) => {
 
   // Transform file with babel
   const componentSource = transformFileSync(requirePath, {
-    presets: ["@babel/preset-env", "@babel/preset-react"]
+    presets: ["@babel/preset-env", "@babel/preset-react"],
+    plugins: [
+      ["@babel/plugin-transform-runtime", {
+        "corejs": 2
+      }]
+    ]
+    
   }).code;
 
   const tmpFolder = path.join(projectRoot, 'tmp');

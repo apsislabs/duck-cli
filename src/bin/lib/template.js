@@ -2,18 +2,20 @@ import path from 'path';
 import fs from 'fs';
 import React from 'react';
 
+import sharp from 'sharp';
+
 import { requireComponent } from './utils/require';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import rimraf from 'rimraf';
 
-export const renderTemplates = (projectRoot, config, data) => {
+export const renderTemplates = async (projectRoot, config, data) => {
   for (const deckKey in config) {
-    renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);    
+    await renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);    
   }
 }
 
-const renderTemplate = (projectRoot, config, data, deckKey) => {
+const renderTemplate = async (projectRoot, config, data, deckKey) => {
   const templatePath = path.resolve(path.join(projectRoot, 'templates', config.templateFront));
 
   const Card = requireComponent(templatePath);
@@ -22,6 +24,7 @@ const renderTemplate = (projectRoot, config, data, deckKey) => {
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
     const row = data[rowIdx];
     const cardPath = path.join(output, filename(rowIdx, row, data));
+    const pngPath = path.join(output, pngname(rowIdx, row, data));
     
     const dom = (
       <svg xmlns="http://www.w3.org/2000/svg">
@@ -32,11 +35,16 @@ const renderTemplate = (projectRoot, config, data, deckKey) => {
 
     const svg = renderToStaticMarkup(dom);
 
+    await sharp(Buffer.from(svg))
+      .png()
+      .toFile(pngPath);
+
     fs.writeFileSync(cardPath, svg); // Perf: This needs to be async
   }
 }
 
 const filename = (rowIdx, row, data) => `card_${rowIdx}.svg`;
+const pngname = (rowIdx, row, data) => `card_${rowIdx}.png`;
 
 const deckFolder = (projectRoot, deckKey) => {
   const output = path.join(projectRoot, 'output');
