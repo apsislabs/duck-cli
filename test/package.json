@@ -1,10 +1,12 @@
 {
-  "dependencies": {},
   "devDependencies": {
     "duck-cli": "file:../"
   },
   "scripts": {
     "build": "duck build"
   },
-  "private": "true"
+  "private": "true",
+  "dependencies": {
+    "moment": "^2.22.2"
+  }
 }

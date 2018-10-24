@@ -1,42 +1,44 @@
 import path from 'path';
 import fs from 'fs';
 import React from 'react';
-import { transformFileSync } from '@babel/core';
+
+import { requireComponent } from './utils/require';
+
 import { renderToStaticMarkup } from 'react-dom/server';
 
 
 export const renderTemplates = (projectRoot, config, data) => {
   for (const deckKey in config) {
-    data[deckKey] = renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);    
+    renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);    
   }
 }
 
 const renderTemplate = (projectRoot, config, data, deckKey) => {
   const templatePath = path.resolve(path.join(projectRoot, 'templates', config.templateFront));
 
-  const cardSource = transformFileSync(templatePath, {
-    presets: ["@babel/preset-env", "@babel/preset-react"]
-  }).code;
+  const Card = requireComponent(templatePath);
 
-  const cardPath = path.join(projectRoot, 'tmp', config.templateFront);
-
-  fs.writeFileSync(cardPath, cardSource);
-  const CardThing = require(cardPath).default;
-  console.log("loaded", CardThing);
-  fs.unlinkSync(cardPath);
-
-  const fuckit = path.join(projectRoot, 'output');
-  fs.mkdirSync(fuckit, { recursive: true });
-  const cardFolder = path.join(projectRoot, 'output', deckKey);
-  fs.mkdirSync(cardFolder, { recursive: true });
-
+  const output = deckFolder(projectRoot, deckKey);
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
-    const cardPath = path.join(cardFolder, `card_${rowIdx}.svg`);
     const row = data[rowIdx];
-    const dom = (<svg><CardThing {...row} /></svg>);
+    const cardPath = path.join(output, filename(rowIdx, row, data));
+    
+    const dom = (<svg><Card {...row} /></svg>);
 
     const svg = renderToStaticMarkup(dom);
-    fs.writeFileSync(cardPath, svg);
-    // console.log(`...generated SVG Markup for deck ${deckKey} and card ${rowIdx}: `, svg);
+
+    fs.writeFileSync(cardPath, svg); // Perf: This needs to be async
   }
+}
+
+const filename = (rowIdx, row, data) => `card_${rowIdx}.svg`;
+
+const deckFolder = (projectRoot, deckKey) => {
+  const output = path.join(projectRoot, 'output');
+  const folder = path.join(output, deckKey);
+
+  if (!fs.existsSync(output)) { fs.mkdirSync(output); }
+  if (!fs.existsSync(folder)) { fs.mkdirSync(folder); }
+
+  return folder;
 }
