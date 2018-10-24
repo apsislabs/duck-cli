@@ -35,7 +35,7 @@ const logHelp = () => {
   process.exit(0);
 };
 
-if (argv.help) {
+if (!cmd && argv.help) {
   logHelp();
 }
 
