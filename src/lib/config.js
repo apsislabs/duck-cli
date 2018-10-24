@@ -10,7 +10,8 @@ export const readConfig = (projectRoot) => {
   try {
     const rawConfig = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
     processConfig(rawConfig);
-    console.log(rawConfig);
+
+    return rawConfig;
   } catch (e) {
     console.error("...an error while reading the config: ", e);
     throw e;
@@ -29,5 +30,5 @@ const processDeckConfig = (deckConfig, deckKey) => {
 
   deckConfig.format = deckConfig.format || "svg";
   deckConfig.data = deckConfig.data = `${deckKey}.csv`;
-  deckConfig.front_template = deckConfig.front_template || `${deckKey}.js`;
+  deckConfig.template_front = deckConfig.template_front || `${deckKey}.js`;
 }
