@@ -28,9 +28,9 @@ const logHelp = () => {
 };
 
 if (!cmd) {
-  commands[defaultCmd]();
+  commands[defaultCmd](argv);
 } else if (cmd && _.has(commands, cmd)) {
-  commands[cmd]();
+  commands[cmd](argv);
 } else {
   logHelp();
 }
