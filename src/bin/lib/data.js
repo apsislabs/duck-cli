@@ -14,7 +14,7 @@ export const readData = (projectRoot, config) => {
 
 const parseCsv = (projectRoot, deckConfig, deckKey) => {
   const dataFile = deckConfig.data;
-  const csvFile = `${projectRoot}${path.sep}data/${dataFile}`;
+  const csvFile = path.join(projectRoot, 'data', dataFile);
 
   console.log(`...looking for CSV file for deck ${deckKey} in ${csvFile}`);
   const csv = fs.readFileSync(csvFile, 'utf8');

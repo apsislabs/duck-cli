@@ -1,6 +1,6 @@
 color,name,description,capacity,rent,expansions,type,qty,
 red,The Dosshouse,,3,∞,0,room,5,86
-red,Sparse Room,,1,1,2,room,5,
+orange,Sparse Room,,1,1,2,room,5,
 red,Tidy Room,,2,2,3,room,3,
 red,Small Tidy Room,,1,2,2,room,2,
 red,Pleasant Room,,2,3,3,room,2,

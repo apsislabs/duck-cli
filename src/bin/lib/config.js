@@ -4,7 +4,8 @@ import yaml from 'js-yaml';
 
 
 export const readConfig = (projectRoot) => {
-  const configFile = `${projectRoot}${path.sep}deck.config.yml`;
+  const configFile = path.join(projectRoot, 'deck.config.yml');
+
   console.log(`...Looking for config in file ${configFile}`);
 
   try {
@@ -30,5 +31,5 @@ const processDeckConfig = (deckConfig, deckKey) => {
 
   deckConfig.format = deckConfig.format || "svg";
   deckConfig.data = deckConfig.data = `${deckKey}.csv`;
-  deckConfig.template_front = deckConfig.template_front || `${deckKey}.js`;
+  deckConfig.templateFront = deckConfig.templateFront || `${deckKey}.js`;
 }

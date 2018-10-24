@@ -1,6 +1,12 @@
 {
-  "dependencies": {
-    "react": "16.6.0"
+  "devDependencies": {
+    "duck-cli": "file:../"
   },
-  "private": "true"
+  "scripts": {
+    "build": "duck build"
+  },
+  "private": "true",
+  "dependencies": {
+    "moment": "^2.22.2"
+  }
 }
