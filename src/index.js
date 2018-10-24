@@ -9,7 +9,16 @@ const commands = {
   build: Build
 };
 
-const argv = parseArgs(process.argv.slice(2));
+const argv = parseArgs(process.argv.slice(2), {
+  alias: {
+    h: "help",
+    p: "path"
+  },
+  boolean: ["h"],
+  string: ["p"],
+  default: { path: "./" }
+});
+
 const defaultCmd = "build";
 const cmd = argv._[0];
 
@@ -25,6 +34,10 @@ const logHelp = () => {
 
   process.exit(0);
 };
+
+if (argv.help) {
+  logHelp();
+}
 
 if (!cmd) {
   commands[defaultCmd](argv);
