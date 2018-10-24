@@ -34,7 +34,6 @@ const explode = (config, data) => {
 
   return _.flatMap(data, row => {
     const explosionCount = row[config.explode] || 1;
-    console.log("EXPLODING ", explosionCount, "TIMES");
 
     return Array.from({ length: explosionCount }).map( () => _.clone(row));
   });
