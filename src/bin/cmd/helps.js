@@ -17,6 +17,10 @@ export const logBuildHelp = () => {
 
     Usage:
       $ duck build
+
+    duck build --help   display help
+    duck build --path   set the path to build from
+    duck build --proof  include proof lines
   `);
 };
 
