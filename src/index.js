@@ -5,6 +5,7 @@ import { Build } from "./cmd/build.js";
 import { Init } from "./cmd/init.js";
 import { logDefaultHelp } from "./cmd/helps.js";
 
+const defaultCmd = "build";
 const commands = {
   init: Init,
   build: Build
@@ -20,11 +21,11 @@ const argv = parseArgs(process.argv.slice(2), {
   default: { path: "./" }
 });
 
-const defaultCmd = "build";
 const cmd = argv._[0];
+const availableCmds = _.keys(commands);
 
 if (!cmd && argv.help) {
-  logDefaultHelp(_.keys(commands));
+  logDefaultHelp(availableCmds);
 }
 
 if (!cmd) {
@@ -32,7 +33,6 @@ if (!cmd) {
 } else if (cmd && _.has(commands, cmd)) {
   commands[cmd](argv);
 } else {
-  logHelp();
+  console.warn(chalk.yellow(`Warning: Unknown Command: ${cmd}`));
+  logDefaultHelp(availableCmds);
 }
-
-console.log(chalk.green("Done!"));

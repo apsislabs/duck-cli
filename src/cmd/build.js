@@ -6,5 +6,5 @@ export const Build = args => {
     logBuildHelp();
   }
 
-  console.log(chalk.yellow("Building!"));
+  console.log(chalk.green("Building!"));
 };
