@@ -23,7 +23,12 @@ const renderTemplate = (projectRoot, config, data, deckKey) => {
     const row = data[rowIdx];
     const cardPath = path.join(output, filename(rowIdx, row, data));
     
-    const dom = (<svg><Card {...row} /></svg>);
+    const dom = (
+      <svg xmlns="http://www.w3.org/2000/svg">
+        <g><rect x="0" y="0" width={config.width} height={config.height} stroke-width="0" fill="none"/></g>
+        <Card {...row} />
+      </svg>
+    );
 
     const svg = renderToStaticMarkup(dom);
 
