@@ -18,5 +18,8 @@
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
     "minimist": "^1.2.0"
+  },
+  "dependencies": {
+    "js-yaml": "^3.12.0"
   }
 }
