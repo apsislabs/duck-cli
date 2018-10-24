@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 import fs from 'fs';
 import path from 'path';
+import _ from 'lodash';
 
 export const readData = (projectRoot, config) => {
   const data = {};
@@ -23,5 +24,18 @@ const parseCsv = (projectRoot, deckConfig, deckKey) => {
 
   // TODO: Error checking here
 
-  return csvResult.data;
+  const data = csvResult.data;
+
+  return explode(deckConfig, data);
+}
+
+const explode = (config, data) => {
+  if (!config.explode) { return data; }
+
+  return _.flatMap(data, row => {
+    const explosionCount = row[config.explode] || 1;
+    console.log("EXPLODING ", explosionCount, "TIMES");
+
+    return Array.from({ length: explosionCount }).map( () => _.clone(row));
+  });
 }
