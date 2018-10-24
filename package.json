@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel src -d dist"
+    "build": "babel src -d dist",
+    "watch": "babel src --watch -d dist"
   },
   "bin": {
     "duck": "./cli.js"
@@ -14,13 +15,15 @@
   "devDependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "chalk": "^2.4.1",
-    "clear": "^0.1.0",
-    "minimist": "^1.2.0"
+    "@babel/preset-env": "^7.1.0"
   },
   "dependencies": {
+    "chalk": "^2.4.1",
+    "clear": "^0.1.0",
     "js-yaml": "^3.12.0",
-    "papaparse": "^4.6.1"
+    "papaparse": "^4.6.1",
+    "lodash": "^4.17.11",
+    "minimist": "^1.2.0",
+    "ncp": "^2.0.0"
   }
 }
