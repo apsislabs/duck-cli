@@ -3,6 +3,7 @@ import chalk from "chalk";
 import { existsSync } from "fs";
 import { logBuildHelp } from "./helps";
 import { printAndExit } from "../lib/utils/logger";
+import { build } from "../lib/build";
 
 const REQUIRED_SUBDIRS = ["data", "templates", "deck.config.yml"];
 
@@ -27,7 +28,7 @@ export const Build = args => {
   });
 
   // Build
-  // BuildDecks(args.path);
+  build(dir);
 
   // Done
   printAndExit(chalk.green("Build complete!"));
