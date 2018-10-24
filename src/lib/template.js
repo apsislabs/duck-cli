@@ -17,8 +17,8 @@ const renderTemplate = (projectRoot, config, data, deckKey) => {
   const templatePath = path.resolve(path.join(projectRoot, 'templates', config.templateFront));
 
   const Card = requireComponent(templatePath);
-
   const output = deckFolder(projectRoot, deckKey);
+
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
     const row = data[rowIdx];
     const cardPath = path.join(output, filename(rowIdx, row, data));
