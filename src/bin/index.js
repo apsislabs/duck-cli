@@ -35,9 +35,15 @@ if (!cmd && argv.help) {
 }
 
 if (!cmd) {
-  commands[defaultCmd](argv);
+  const promise = commands[defaultCmd](argv);
+  if (promise) {
+    promise.then(() => process.exit(0)).catch(e => console.error(chalk.red(e)));
+  }
 } else if (cmd && _.has(commands, cmd)) {
-  commands[cmd](argv);
+  const promise = commands[cmd](argv);
+  if (promise) {
+    promise.then(() => process.exit(0)).catch(e => console.error(chalk.red(e)));
+  }
 } else {
   console.warn(chalk.yellow(`Warning: Unknown Command: ${cmd}`));
   logDefaultHelp(availableCmds);
