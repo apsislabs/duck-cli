@@ -1,7 +1,7 @@
+import { createConverter } from "convert-svg-to-png";
 import path from "path";
 import rimraf from "rimraf";
 import fsp from "./utils/fsp";
-import { createConverter, convert } from "convert-svg-to-png";
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
   for (const deckKey in config) {
