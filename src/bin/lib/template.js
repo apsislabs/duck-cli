@@ -1,11 +1,8 @@
-import path from "path";
-import fs from "fs";
-import React from "react";
+import path from 'path';
+import React from 'react';
 
-
-import { requireComponent } from "./utils/require";
-import { renderToStaticMarkup } from "react-dom/server";
-
+import { requireComponent } from './utils/require';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
@@ -22,14 +19,12 @@ const renderTemplate = async (projectRoot, config, data, deckKey) => {
     path.join(projectRoot, "templates", config.templateFront)
   );
 
-  const Card = requireComponent(templatePath);
+  const Card = await requireComponent(templatePath);
 
   const renderings = [];
 
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
     const row = data[rowIdx];
-    // const cardPath = path.join(output, filename(rowIdx, row, data));
-    // const pngPath = path.join(output, pngname(rowIdx, row, data));
     
     const dom = (
       <svg xmlns="http://www.w3.org/2000/svg">
@@ -50,8 +45,6 @@ const renderTemplate = async (projectRoot, config, data, deckKey) => {
     const svg = renderToStaticMarkup(dom);
 
     renderings.push({ svg });
-
-    // fs.writeFileSync(cardPath, svg); // Perf: This needs to be async
   }
 
   return renderings;

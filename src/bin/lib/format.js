@@ -1,11 +1,7 @@
 import path from 'path';
-import fs from 'fs';
 import rimraf from 'rimraf';
 import sharp from 'sharp';
-
-const { promisify } = require("util");
-
-const writeFile = promisify(fs.writeFile);
+import fsp from './utils/fsp';
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
   for (const deckKey in config) {
@@ -36,7 +32,7 @@ const formatDeck = async (projectRoot, config, data, renderings, deckKey) => {
 }
 
 const formatSvg = async (rendering, idx, output) => {
-  await writeFile(svgname(idx, output), rendering.svg);
+  await fsp.writeFile(svgname(idx, output), rendering.svg);
 }
 
 const formatPng = async (rendering, idx, output) => {
@@ -53,10 +49,10 @@ const deckFolder = (projectRoot, deckKey) => {
   const output = path.join(projectRoot, 'output');
   const folder = path.join(output, deckKey);
 
-  if (!fs.existsSync(output)) { fs.mkdirSync(output); }
+  if (! await fsp.exists(output)) { await fsp.mkdir(output); }
 
-  if (fs.existsSync(folder)) { rimraf.sync(folder); }
-  if (!fs.existsSync(folder)) { fs.mkdirSync(folder); }
+  if ( await fsp.exists(folder)) { rimraf.sync(folder); }
+  if (! await fsp.exists(folder)) { await fsp.mkdir(folder); }
 
   return folder;
 }
