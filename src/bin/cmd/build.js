@@ -7,7 +7,7 @@ import { build } from "../lib/build";
 
 const REQUIRED_SUBDIRS = ["data", "templates", "deck.config.yml"];
 
-export const Build = args => {
+export const Build = async args => {
   if (args.help) {
     logBuildHelp();
   }
@@ -28,7 +28,7 @@ export const Build = args => {
   });
 
   // Build
-  build(dir);
+  await build(dir);
 
   // Done
   printAndExit(chalk.green("Build complete!"));

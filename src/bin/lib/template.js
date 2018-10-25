@@ -1,30 +1,31 @@
-import path from "path";
-import fs from "fs";
-import React from "react";
+import path from 'path';
+import React from 'react';
 
-import { requireComponent } from "./utils/require";
-import { renderToStaticMarkup } from "react-dom/server";
+import { requireComponent } from './utils/require';
+import { renderToStaticMarkup } from 'react-dom/server';
 
-import rimraf from "rimraf";
+export const renderTemplates = async (projectRoot, config, data) => {
+  const renderings = {};
 
-export const renderTemplates = (projectRoot, config, data) => {
   for (const deckKey in config) {
-    renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);
+    renderings[deckKey] = await renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);
   }
-};
 
-const renderTemplate = (projectRoot, config, data, deckKey) => {
+  return renderings;
+}
+
+const renderTemplate = async (projectRoot, config, data, deckKey) => {
   const templatePath = path.resolve(
     path.join(projectRoot, "templates", config.templateFront)
   );
 
-  const Card = requireComponent(templatePath);
-  const output = deckFolder(projectRoot, deckKey);
+  const Card = await requireComponent(templatePath);
+
+  const renderings = [];
 
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
     const row = data[rowIdx];
-    const cardPath = path.join(output, filename(rowIdx, row, data));
-
+    
     const dom = (
       <svg xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -43,26 +44,8 @@ const renderTemplate = (projectRoot, config, data, deckKey) => {
 
     const svg = renderToStaticMarkup(dom);
 
-    fs.writeFileSync(cardPath, svg); // Perf: This needs to be async
-  }
-};
-
-const filename = (rowIdx, row, data) => `card_${rowIdx}.svg`;
-
-const deckFolder = (projectRoot, deckKey) => {
-  const output = path.join(projectRoot, "output");
-  const folder = path.join(output, deckKey);
-
-  if (!fs.existsSync(output)) {
-    fs.mkdirSync(output);
+    renderings.push({ svg });
   }
 
-  if (fs.existsSync(folder)) {
-    rimraf.sync(folder);
-  }
-  if (!fs.existsSync(folder)) {
-    fs.mkdirSync(folder);
-  }
-
-  return folder;
-};
+  return renderings;
+}

@@ -72,7 +72,7 @@ const getConfig = ({ NAME, SIZE, WIDTH, HEIGHT, FORMATS }) => {
     [`${NAME}`]: {
       width: WIDTH ? WIDTH : defaultSizes.width,
       height: HEIGHT ? HEIGHT : defaultSizes.height,
-      formats: FORMATS
+      format: FORMATS
     }
   };
 };
