@@ -5,7 +5,7 @@
   },
   "private": "true",
   "devDependencies": {
-    "duck-cli": "^1.0.0"
+    "duck-cli": "^1.0.1"
   },
   "dependencies": {}
 }
