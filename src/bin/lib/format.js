@@ -1,7 +1,7 @@
 import path from "path";
 import rimraf from "rimraf";
-import sharp from "sharp";
 import fsp from "./utils/fsp";
+import { createConverter, convert } from "convert-svg-to-png";
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
   for (const deckKey in config) {
@@ -22,15 +22,23 @@ const formatDeck = async (projectRoot, config, data, renderings, deckKey) => {
   const png = config.format.includes("png");
 
   const promises = [];
+  const converter = createConverter();
 
-  for (let i = 0; i < renderings.length; i++) {
-    if (svg) {
-      promises.push(formatSvg(renderings[i], i, output));
-    }
+  try {
+    console.log("...saving files");
+    for (let i = 0; i < renderings.length; i++) {
+      process.stdout.write(".");
+      if (svg) {
+        promises.push(formatSvg(renderings[i], i, output));
+      }
 
-    if (png) {
-      promises.push(formatPng(renderings[i], i, output));
+      if (png) {
+        await formatPng(converter, renderings[i], i, output);
+      }
     }
+  } finally {
+    converter.destroy();
+    process.stdout.write("\n");
   }
 
   await Promise.all(promises);
@@ -40,10 +48,13 @@ const formatSvg = async (rendering, idx, output) => {
   await fsp.writeFile(svgname(idx, output), rendering.svg);
 };
 
-const formatPng = async (rendering, idx, output) => {
-  await sharp(Buffer.from(rendering.svg))
-    .png()
-    .toFile(pngname(idx, output));
+const formatPng = async (converter, rendering, idx, output) => {
+  const png = await converter.convert(rendering.svg, {
+    width: rendering.width,
+    height: rendering.height
+  });
+
+  await fsp.writeFile(pngname(idx, output), png);
 };
 
 const svgname = (rowIdx, output) =>

@@ -1,18 +1,23 @@
-import path from 'path';
-import React from 'react';
+import path from "path";
+import React from "react";
 
-import { requireComponent } from './utils/require';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { requireComponent } from "./utils/require";
+import { renderToStaticMarkup } from "react-dom/server";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
 
   for (const deckKey in config) {
-    renderings[deckKey] = await renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);
+    renderings[deckKey] = await renderTemplate(
+      projectRoot,
+      config[deckKey],
+      data[deckKey],
+      deckKey
+    );
   }
 
   return renderings;
-}
+};
 
 const renderTemplate = async (projectRoot, config, data, deckKey) => {
   const templatePath = path.resolve(
@@ -25,7 +30,7 @@ const renderTemplate = async (projectRoot, config, data, deckKey) => {
 
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
     const row = data[rowIdx];
-    
+
     const dom = (
       <svg xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -44,8 +49,8 @@ const renderTemplate = async (projectRoot, config, data, deckKey) => {
 
     const svg = renderToStaticMarkup(dom);
 
-    renderings.push({ svg });
+    renderings.push({ svg, width: config.width, height: config.height });
   }
 
   return renderings;
-}
+};

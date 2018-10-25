@@ -9,6 +9,7 @@ export const Text = ({
   fontSize = "12px",
   fontFamily = "Helvetica",
   fontStyle = "regular",
+  baseline = "hanging",
   children,
   color,
   x,
@@ -27,6 +28,7 @@ export const Text = ({
       x={x}
       dy={i > 0 ? lineHeight : undefined}
       dangerouslySetInnerHTML={{ __html: downvg(l) }}
+      dominantBaseline="no-change"
     />
   ));
 
@@ -34,6 +36,7 @@ export const Text = ({
     <React.Fragment>
       {children && (
         <text
+          dominantBaseline={baseline}
           fontFamily={fontFamily}
           fontSize={fontSize}
           fontStyle={fontStyle}
