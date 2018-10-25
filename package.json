@@ -2,7 +2,7 @@
   "name": "duck-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/components/index.js",
   "scripts": {
     "build": "babel src -d dist",
     "watch": "babel src --watch -d dist"
@@ -15,20 +15,25 @@
   "devDependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
+    "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/preset-env": "^7.1.0"
   },
   "dependencies": {
     "@babel/preset-react": "^7.0.0",
+    "babel-polyfill": "^6.26.0",
+    "canvas": "^2.0.1",
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
+    "inquirer": "^6.2.0",
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
     "minimist": "^1.2.0",
     "ncp": "^2.0.0",
     "papaparse": "^4.6.1",
-    "rimraf": "^2.6.2",
     "react": "^16.6.0",
-    "react-dom": "^16.6.0"
+    "react-dom": "^16.6.0",
+    "rimraf": "^2.6.2",
+    "units-css": "^0.4.0"
   },
   "peerDependencies": {}
 }

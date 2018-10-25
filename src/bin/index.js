@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import chalk from "chalk";
 import _ from "lodash";
 import parseArgs from "minimist";
@@ -14,15 +15,20 @@ const commands = {
 const argv = parseArgs(process.argv.slice(2), {
   alias: {
     h: "help",
-    p: "path"
+    p: "path",
+    P: "proof"
   },
-  boolean: ["h"],
+  boolean: ["h", "P"],
   string: ["p"],
-  default: { path: "./" }
+  default: { path: "./", proof: false }
 });
 
 const cmd = argv._[0];
 const availableCmds = _.keys(commands);
+
+if (argv.proof) {
+  process.env.PROOF = true;
+}
 
 if (!cmd && argv.help) {
   logDefaultHelp(availableCmds);
