@@ -6,6 +6,7 @@ export const Card = ({
   cut = true,
   width = 850,
   height = 1125,
+  children,
   ...props
 }) => {
   const CardBackground = (
@@ -56,7 +57,7 @@ export const Card = ({
       {process.env.PROOF && (cut && CutZone)}
       {process.env.PROOF && (safeZone && SafeZone)}
 
-      {props.children}
+      {children}
     </g>
   );
 };
