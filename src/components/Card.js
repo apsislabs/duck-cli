@@ -1,13 +1,14 @@
 import React from "react";
 import { CutArea } from "./CutArea";
+
 export const Card = ({
   safeZone = true,
   cut = true,
   width = 850,
   height = 1125,
   ...props
-}) => (
-  <g>
+}) => {
+  const CardBackground = (
     <rect
       id="background"
       x="0"
@@ -18,31 +19,44 @@ export const Card = ({
       fill="none"
       {...props}
     />
+  );
 
-    {process.env.PROOF &&
-      (cut && (
-        <CutArea
-          id="cut"
-          margin="37.5"
-          width={width}
-          height={height}
-          color="red"
-          strokeDasharray={null}
-        />
-      ))}
+  const CutZone = (
+    <CutArea
+      id="cut"
+      margin="37.5"
+      width={width}
+      height={height}
+      color="red"
+      strokeDasharray={null}
+    />
+  );
 
-    {process.env.PROOF &&
-      (safeZone && (
-        <CutArea
-          id="safe_zone"
-          margin="75"
-          width={width}
-          height={height}
-          color="blue"
-          strokeDasharray="3 3"
-        />
-      ))}
+  const SafeZone = (
+    <CutArea
+      id="safe_zone"
+      margin="75"
+      width={width}
+      height={height}
+      color="blue"
+      strokeDasharray="3 3"
+    />
+  );
 
-    {props.children}
-  </g>
-);
+  return (
+    <g>
+      <defs>
+        <clipPath id="card">{CardBackground}</clipPath>
+        <clipPath id="cut">{CutZone}</clipPath>
+        <clipPath id="safe">{SafeZone}</clipPath>
+      </defs>
+
+      {CardBackground}
+
+      {process.env.PROOF && (cut && CutZone)}
+      {process.env.PROOF && (safeZone && SafeZone)}
+
+      {props.children}
+    </g>
+  );
+};
