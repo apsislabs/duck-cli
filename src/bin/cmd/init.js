@@ -7,7 +7,9 @@ import inquirer from "inquirer";
 import { safeDump } from "js-yaml";
 import { logInitHelp } from "./helps";
 import { printAndExit } from "../lib/utils/logger";
-import { print } from "util";
+import { promisify } from "util";
+
+const pncp = promisify(ncp);
 
 const askQuestions = () => {
   const questions = [
@@ -96,40 +98,42 @@ export const Init = async args => {
 
   const answers = await askQuestions();
 
-  await ncp(examplePath, destDir, err => {
-    if (err) {
-      printAndExit(err);
+  try {
+    await pncp(examplePath, destDir);
+  } catch (err) {
+    printAndExit(err);
+  }
+
+  const configPath = path.join(destDir, "deck.config.yml");
+
+  // Write config file
+  fs.writeFileSync(configPath, safeDump(getConfig(answers)));
+
+  // Rename example files
+  fs.renameSync(
+    path.join(destDir, "data", `example.csv`),
+    path.join(destDir, "data", `${answers.NAME}.csv`)
+  );
+
+  fs.renameSync(
+    path.join(destDir, "templates", `example.js`),
+    path.join(destDir, "templates", `${answers.NAME}.js`)
+  );
+
+  // Cleanup
+  const cleanupPaths = ["node_modules", "package-lock.json", "output"];
+  cleanupPaths.forEach(p => {
+    p = path.join(destDir, p);
+    if (existsSync(p)) {
+      rimraf.sync(p);
     }
-
-    const configPath = path.join(destDir, "deck.config.yml");
-
-    // Write config file
-    fs.writeFileSync(configPath, safeDump(getConfig(answers)));
-
-    // Touch template files
-    touchSync(path.join(destDir, "data", `${answers.NAME}.csv`));
-
-    // Rename example component
-    fs.renameSync(
-      path.join(destDir, "templates", `example.js`),
-      path.join(destDir, "templates", `${answers.NAME}.js`)
-    );
-
-    // Cleanup
-    const cleanupPaths = ["node_modules", "package-lock.json", "output"];
-    cleanupPaths.forEach(p => {
-      p = path.join(destDir, p);
-      if (existsSync(p)) {
-        rimraf.sync(p);
-      }
-    });
-
-    printAndExit(`
-      Your project is now set up and ready to go. To start, run the following commands:
-
-      $ cd ${args.path}
-      $ npm install
-      $ npm run build
-    `);
   });
+
+  printAndExit(`
+    Your project is now set up and ready to go. To start, run the following commands:
+
+    $ cd ${args.path}
+    $ npm install
+    $ npm run build
+  `);
 };
