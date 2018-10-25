@@ -2,18 +2,20 @@ import path from "path";
 import fs from "fs";
 import React from "react";
 
-import sharp from "sharp";
 
 import { requireComponent } from "./utils/require";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import rimraf from "rimraf";
 
 export const renderTemplates = async (projectRoot, config, data) => {
+  const renderings = {};
+
   for (const deckKey in config) {
-    await renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);
+    renderings[deckKey] = await renderTemplate(projectRoot, config[deckKey], data[deckKey], deckKey);
   }
-};
+
+  return renderings;
+}
 
 const renderTemplate = async (projectRoot, config, data, deckKey) => {
   const templatePath = path.resolve(
@@ -21,13 +23,14 @@ const renderTemplate = async (projectRoot, config, data, deckKey) => {
   );
 
   const Card = requireComponent(templatePath);
-  const output = deckFolder(projectRoot, deckKey);
+
+  const renderings = [];
 
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
     const row = data[rowIdx];
-    const cardPath = path.join(output, filename(rowIdx, row, data));
-    const pngPath = path.join(output, pngname(rowIdx, row, data));
-
+    // const cardPath = path.join(output, filename(rowIdx, row, data));
+    // const pngPath = path.join(output, pngname(rowIdx, row, data));
+    
     const dom = (
       <svg xmlns="http://www.w3.org/2000/svg">
         <g>
@@ -46,31 +49,10 @@ const renderTemplate = async (projectRoot, config, data, deckKey) => {
 
     const svg = renderToStaticMarkup(dom);
 
-    await sharp(Buffer.from(svg))
-      .png()
-      .toFile(pngPath);
+    renderings.push({ svg });
 
-    fs.writeFileSync(cardPath, svg); // Perf: This needs to be async
-  }
-};
-
-const filename = (rowIdx, row, data) => `card_${rowIdx}.svg`;
-const pngname = (rowIdx, row, data) => `card_${rowIdx}.png`;
-
-const deckFolder = (projectRoot, deckKey) => {
-  const output = path.join(projectRoot, "output");
-  const folder = path.join(output, deckKey);
-
-  if (!fs.existsSync(output)) {
-    fs.mkdirSync(output);
+    // fs.writeFileSync(cardPath, svg); // Perf: This needs to be async
   }
 
-  if (fs.existsSync(folder)) {
-    rimraf.sync(folder);
-  }
-  if (!fs.existsSync(folder)) {
-    fs.mkdirSync(folder);
-  }
-
-  return folder;
-};
+  return renderings;
+}

@@ -29,7 +29,12 @@ const processDeckConfig = (deckConfig, deckKey) => {
   if (!deckConfig.width) { throw `Parameter 'width' is required in deck ${deckKey}` }
   if (!deckConfig.height) { throw `Parameter 'height' is required in deck ${deckKey}` }
 
-  deckConfig.format = deckConfig.format || "svg";
+  deckConfig.format = normalizeFormat(deckConfig.format || "svg");
   deckConfig.data = deckConfig.data = `${deckKey}.csv`;
   deckConfig.templateFront = deckConfig.templateFront || `${deckKey}.js`;
+}
+
+const normalizeFormat = (format) => {
+  if (Array.isArray(format)) { return format; }
+  return [format];
 }
