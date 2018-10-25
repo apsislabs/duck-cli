@@ -6,7 +6,5 @@
     "build": "duck build"
   },
   "private": "true",
-  "dependencies": {
-    "moment": "^2.22.2"
-  }
+  "dependencies": {}
 }

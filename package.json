@@ -2,7 +2,7 @@
   "name": "duck-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/components/index.js",
   "scripts": {
     "build": "babel src -d dist",
     "watch": "babel src --watch -d dist"
