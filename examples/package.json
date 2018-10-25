@@ -1,10 +1,11 @@
 {
-  "devDependencies": {
-    "duck-cli": "file:../"
-  },
   "scripts": {
-    "build": "duck build"
+    "build": "duck build",
+    "proof": "duck build --proof"
   },
   "private": "true",
+  "devDependencies": {
+    "duck-cli": "^1.0.0"
+  },
   "dependencies": {}
 }
