@@ -2,8 +2,8 @@ dist/
 node_modules/
 .DS_Store
 
-test/node_modules/
-test/package-lock.json
-test/output
-test/tmp
+examples/node_modules/
+examples/package-lock.json
+examples/output
+examples/tmp
 .vscode

@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import chalk from "chalk";
 import _ from "lodash";
 import parseArgs from "minimist";
