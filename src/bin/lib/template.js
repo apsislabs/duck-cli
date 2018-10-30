@@ -1,30 +1,49 @@
 import path from "path";
+import rimraf from "rimraf";
 import React from "react";
 
-import { requireComponent } from "./utils/require";
+import fsp from "./utils/fsp";
+import { transformDir } from "./utils/transform";
 import { renderToStaticMarkup } from "react-dom/server";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
 
+  const templatesPath = path.join(projectRoot, "templates");
+  const tmpPath = path.join(projectRoot, "_tmp");
+
+  await transpileTemplates(templatesPath, tmpPath);
+
   for (const deckKey in config) {
     renderings[deckKey] = await renderTemplate(
-      projectRoot,
+      tmpPath,
       config[deckKey],
-      data[deckKey],
-      deckKey
+      data[deckKey]
     );
   }
 
+  rimraf.sync(tmpPath);
   return renderings;
 };
 
-const renderTemplate = async (projectRoot, config, data, deckKey) => {
+const transpileTemplates = async (projectRoot, tmpPath) => {
+  let babel = {
+    presets: ["@babel/preset-env", "@babel/preset-react"]
+  };
+
+  try {
+    babel = await fsp.readJson(path.join(projectRoot, ".babelrc"));
+  } catch (e) {}
+
+  await transformDir(projectRoot, tmpPath, { babel });
+};
+
+const renderTemplate = async (templatesPath, config, data) => {
   const templatePath = path.resolve(
-    path.join(projectRoot, "templates", config.templateFront)
+    path.join(templatesPath, config.templateFront)
   );
 
-  const Card = await requireComponent(templatePath);
+  const Card = require(templatePath).default;
 
   const renderings = [];
 
