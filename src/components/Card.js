@@ -1,6 +1,6 @@
 import React from "react";
 import { CutArea } from "./CutArea";
-import { DeckConsumer } from "./lib/DeckContext";
+import { DeckConsumer } from "./DeckContext";
 import PropTypes from "prop-types";
 
 const BaseCard = ({ safeZone = true, cut = true, children, ...props }) => {

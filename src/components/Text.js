@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { svgPropTypes } from "./lib/propTypes";
+import { svgPropTypes } from "../lib/propTypes";
 import _ from "lodash";
 import { measureText } from "../lib/measuretext";
 import { splitText } from "../lib/splittext";

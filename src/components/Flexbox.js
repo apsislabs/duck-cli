@@ -1,6 +1,6 @@
 import React from "react";
 import yoga, { Node } from "yoga-layout";
-import { flexboxPropTypes } from "./lib/propTypes";
+import { flexboxPropTypes } from "../lib/propTypes";
 import {
   getEdge,
   getAlign,
@@ -8,7 +8,7 @@ import {
   getFlexDirection,
   getFlexWrap,
   getJustifyContent
-} from "./lib/yoga";
+} from "../lib/yoga";
 
 const setNodePadding = (val, dir) => {
   const edge = getEdge(dir);
