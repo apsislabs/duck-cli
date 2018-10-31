@@ -1,14 +1,9 @@
 import React from "react";
 import { CutArea } from "./CutArea";
+import { DeckConsumer } from "./lib/DeckContext";
 
-export const Card = ({
-  safeZone = true,
-  cut = true,
-  width = 850,
-  height = 1125,
-  children,
-  ...props
-}) => {
+const BaseCard = ({ safeZone = true, cut = true, children, ...props }) => {
+  const { width, height } = props;
   const CardBackground = (
     <rect
       id="background"
@@ -61,3 +56,12 @@ export const Card = ({
     </g>
   );
 };
+
+export const Card = props => (
+  <DeckConsumer>
+    {context => {
+      let newProps = { width: context.width, height: context.height, ...props };
+      return <BaseCard {...newProps} />;
+    }}
+  </DeckConsumer>
+);

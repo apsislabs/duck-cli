@@ -5,6 +5,7 @@ import React from "react";
 import fsp from "./utils/fsp";
 import { transformDir } from "./utils/transform";
 import { renderToStaticMarkup } from "react-dom/server";
+import { DeckProvider } from "../../components/lib/DeckContext";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
@@ -62,7 +63,10 @@ const renderTemplate = async (templatesPath, config, data) => {
             fill="none"
           />
         </g>
-        <Card {...row} />
+
+        <DeckProvider value={config}>
+          <Card {...row} config={config} data={data} rowIndex={rowIdx} />
+        </DeckProvider>
       </svg>
     );
 
