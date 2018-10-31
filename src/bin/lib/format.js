@@ -69,28 +69,28 @@ const formatPng = async (converter, rendering, idx, output) => {
 };
 
 const formatPdf = async (pngPaths, out, config) => {
-  // console.log(pngPaths);
-  const doc = new PDFDocument({
-    layout: "landscape"
-  });
+  const docWidth = insToPts(11);
+  const docHeight = insToPts(8.5);
+  const margin = insToPts(0.5);
 
-  const outPath = path.join(out, "out.pdf");
-  const pdfStream = fs.createWriteStream(outPath);
+  const pageWidth = docWidth - margin * 2; // width less margin
+  const pageHeight = docHeight - margin * 2; // width less margin
+  const cardWidth = pxToPts(config.width); // card width in pts
+  const cardHeight = pxToPts(config.height); // card width in pts
+  const cardsPerRow = Math.floor(pageWidth / cardWidth);
+  const rowsPerPage = Math.floor(pageHeight / cardHeight);
 
-  let docWidth = insToPts(11);
-  let docHeight = insToPts(8.5);
-  let margin = insToPts(0.5);
-  let pageWidth = docWidth - margin * 2; // width less margin
-  let pageHeight = docHeight - margin * 2; // width less margin
-  let cardWidth = pxToPts(config.width); // card width in pts
-  let cardHeight = pxToPts(config.height); // card width in pts
-  let cardsPerRow = Math.floor(pageWidth / cardWidth);
-  let rowsPerPage = Math.floor(pageHeight / cardHeight);
-
-  let rows = _.chunk(pngPaths, cardsPerRow);
-  let pages = _.chunk(rows, rowsPerPage);
-
+  const rows = _.chunk(pngPaths, cardsPerRow);
+  const pages = _.chunk(rows, rowsPerPage);
+  const docConfig = {
+    layout: "landscape",
+    size: [docHeight, docWidth]
+  };
   return new Promise((res, err) => {
+    const doc = new PDFDocument(docConfig);
+    const outPath = path.join(out, "out.pdf");
+    const pdfStream = fs.createWriteStream(outPath);
+
     try {
       doc.pipe(pdfStream);
 
@@ -102,37 +102,48 @@ const formatPdf = async (pngPaths, out, config) => {
         _.forEach(rows, (row, j) => {
           let y = j * cardHeight + margin;
 
-          doc
-            .moveTo(0, y)
-            .lineTo(docWidth, y)
-            .dash(5, { space: 10 })
-            .stroke();
+          drawTrimLine(doc, 0, y, docWidth, y);
 
           // Iterate Cards
           _.forEach(row, (card, k) => {
             let x = k * cardWidth + margin;
+            drawTrimLine(doc, x, 0, x, docHeight);
 
-            doc
-              .moveTo(x, 0)
-              .lineTo(x, docHeight)
-              .dash(5, { space: 10 })
-              .stroke();
+            doc.image(card, x, y, {
+              width: cardWidth,
+              height: cardHeight
+            });
 
-            doc.image(card, x, y, { width: cardWidth, height: cardHeight });
+            // Last Card in Row
+            if (k + 1 === row.length) {
+              let finalX = x + cardWidth;
+              drawTrimLine(doc, finalX, 0, finalX, docHeight);
+            }
           });
-        });
 
-        console.log("after card each");
+          // Last Row on Page
+          if (j + 1 === rows.length) {
+            let finalY = y + cardHeight;
+            drawTrimLine(doc, 0, finalY, docWidth, finalY);
+          }
+        });
       });
-      console.log("after pages each");
       doc.end();
     } catch (e) {
-      console.error(e.stack);
       err(e);
     }
 
     pdfStream.addListener("finish", res);
   });
+};
+
+const drawTrimLine = (doc, startX, startY, endX, endY) => {
+  doc
+    .moveTo(startX, startY)
+    .lineWidth(0.5)
+    .lineTo(endX, endY)
+    .dash(5)
+    .stroke("#ccc");
 };
 
 const insToPts = (s = 0) => s * 72;
