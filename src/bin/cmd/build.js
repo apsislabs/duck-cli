@@ -34,11 +34,14 @@ export const Build = async args => {
 
   if (args.watch) {
     await new Promise((res, rej) => {
-      const watcher = chokidar.watch(resolve("./templates/"), {
-        ignored: ["node_modules", /(^|[\/\\])\../],
-        ignoreInitial: true,
-        persistent: true
-      });
+      const watcher = chokidar.watch(
+        [resolve("./templates/"), resolve("./data/")],
+        {
+          ignored: ["node_modules", /(^|[\/\\])\../],
+          ignoreInitial: true,
+          persistent: true
+        }
+      );
 
       // Add event listeners.
       const rebuild = async p => {
