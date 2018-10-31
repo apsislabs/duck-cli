@@ -5,7 +5,6 @@ import { logBuildHelp } from "./helps";
 import { printAndExit } from "../lib/utils/logger";
 import { build } from "../lib/build";
 import chokidar from "chokidar";
-import invalidate from "invalidate-module";
 
 const REQUIRED_SUBDIRS = ["data", "templates", "deck.config.yml"];
 
