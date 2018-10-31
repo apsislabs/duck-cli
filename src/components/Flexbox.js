@@ -36,29 +36,48 @@ const setNodeMargin = (val, dir) => {
 };
 
 const setStyles = (node, style = {}) => {
-  const alignContent = getAlign(style.alignContent);
-  const alignItems = getAlign(style.alignItems);
-  const display = getDisplay(style.display);
-  const flexDirection = getFlexDirection(style.flexDirection);
-  const flexWrap = getFlexWrap(style.flexWrap);
-  const justifyContent = getJustifyContent(style.justifyContent);
+  if (style.alignContent) {
+    const alignContent = getAlign(style.alignContent);
+    node.setAlignContent(alignContent);
+  }
 
-  node.setAlignContent(alignContent);
-  node.setAlignItems(alignItems);
-  node.setDisplay(display);
-  node.setFlexDirection(flexDirection);
-  node.setFlexWrap(flexWrap);
-  node.setJustifyContent(justifyContent);
+  if (style.alignItems) {
+    const alignItems = getAlign(style.alignItems);
+    node.setAlignItems(alignItems);
+  }
+
+  if (style.display) {
+    const display = getDisplay(style.display);
+    node.setDisplay(display);
+  }
+
+  if (style.flexDirection) {
+    const flexDirection = getFlexDirection(style.flexDirection);
+    node.setFlexDirection(flexDirection);
+  }
+
+  if (style.flexWrap) {
+    const flexWrap = getFlexWrap(style.flexWrap);
+    node.setFlexWrap(flexWrap);
+  }
+
+  if (style.justifyContent) {
+    const justifyContent = getJustifyContent(style.justifyContent);
+    node.setJustifyContent(justifyContent);
+  }
 
   if (style.aspectRatio) {
     node.setAspectRatio(style.aspectRatio);
   }
+
   if (style.flex) {
     node.setFlex(style.flex);
   }
+
   if (style.flexGrow) {
     node.setFlexGrow(style.flexGrow);
   }
+
   if (style.flexShrink) {
     node.setFlexShrink(style.flexShrink);
   }
@@ -102,7 +121,9 @@ const setStyles = (node, style = {}) => {
   }
 
   // Borders
-  node.setBorder("all", style.borderWidth);
+  if (style.borderWidth) {
+    node.setBorder(getEdge("all"), style.borderWidth);
+  }
 
   // Margins
   setNodeMargin(style.marginTop, "top");
