@@ -1,4 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
+import PropTypes from "prop-types";
+import { svgPropTypes } from "./lib/propTypes";
+
 export const CutArea = ({
   radius = 37.5,
   margin = 37.5,
@@ -22,3 +25,10 @@ export const CutArea = ({
     {...props}
   />
 );
+
+CutArea.propTypes = {
+  ...svgPropTypes,
+  radius: PropTypes.number,
+  color: PropTypes.string,
+  strokeDasharray: PropTypes.string
+};

@@ -1,6 +1,7 @@
 import React from "react";
 import { CutArea } from "./CutArea";
 import { DeckConsumer } from "./lib/DeckContext";
+import PropTypes from "prop-types";
 
 const BaseCard = ({ safeZone = true, cut = true, children, ...props }) => {
   const {
@@ -73,3 +74,15 @@ export const Card = props => (
     }}
   </DeckConsumer>
 );
+
+const cardPropTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  cutMargin: PropTypes.number,
+  safeMargin: PropTypes.number,
+  cutColor: PropTypes.string,
+  safeColor: PropTypes.string
+};
+
+BaseCard.propTypes = cardPropTypes;
+Card.propTypes = cardPropTypes;

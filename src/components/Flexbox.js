@@ -1,5 +1,6 @@
 import React from "react";
 import yoga, { Node } from "yoga-layout";
+import { flexboxPropTypes } from "./lib/propTypes";
 import {
   getEdge,
   getAlign,
@@ -199,3 +200,7 @@ export const Flexbox = ({ children, ...props }) => {
     </g>
   );
 };
+
+Flexbox.propTypes = flexboxPropTypes;
+
+Flexbox.defaultProps = { display: "flex", flex: 1 };

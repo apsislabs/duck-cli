@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { svgPropTypes } from "./lib/propTypes";
 import _ from "lodash";
 import { measureText } from "../lib/measuretext";
 import { splitText } from "../lib/splittext";
@@ -60,4 +62,14 @@ export const Text = ({
       )}
     </React.Fragment>
   );
+};
+
+Text.propTypes = {
+  ...svgPropTypes,
+  fontSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  lineHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  fontFamily: PropTypes.string,
+  fontStyle: PropTypes.oneOf(["regular", "italic"]),
+  baseline: PropTypes.oneOf(["hanging"]),
+  fill: PropTypes.string
 };
