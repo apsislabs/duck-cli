@@ -3,10 +3,15 @@ import fs from "fs";
 import _ from "lodash";
 import path from "path";
 import PDFDocument from "pdfkit";
+import { crop } from "png-crop";
 import rimraf from "rimraf";
 import { pngname, svgname } from "./utils/filenames";
 import fsp from "./utils/fsp";
 import { insToPts, pxToPts } from "./utils/units";
+import { promisify } from "util";
+
+// Wrap crop
+const cropSync = promisify(crop);
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
   for (const deckKey in config) {
@@ -33,6 +38,7 @@ const formatDeck = async (projectRoot, config, data, renderings, deckKey) => {
 
   try {
     console.log("...saving files");
+
     for (let i = 0; i < renderings.length; i++) {
       process.stdout.write(".");
 
@@ -47,7 +53,16 @@ const formatDeck = async (projectRoot, config, data, renderings, deckKey) => {
     }
 
     if (pdf) {
-      await formatPdf(generatedPngs, output, config);
+      let pngPaths = generatedPngs;
+
+      if (config.crop) {
+        console.log("\n ...cropping images");
+        pngPaths = await cropPngs(generatedPngs, output, config);
+      }
+
+      console.log("\n ...generating PDF");
+      console.log(pngPaths);
+      await formatPdf(pngPaths, output, config);
     }
   } finally {
     converter.destroy();
@@ -55,6 +70,27 @@ const formatDeck = async (projectRoot, config, data, renderings, deckKey) => {
   }
 
   await Promise.all(promises);
+};
+
+const cropPngs = async (pngPaths, output, config) => {
+  const width = config.width - config.crop * 2;
+  const height = config.height - config.crop * 2;
+  const cropOpts = { width, height, left: config.crop, top: config.crop };
+
+  let cropPromises = _.map(pngPaths, async p => {
+    let basename = path.basename(p);
+    let dest = path.join(output, `cropped_${basename}`);
+
+    try {
+      await cropSync(p, dest, cropOpts);
+    } catch (e) {
+      console.error(e.stack);
+    }
+
+    return dest;
+  });
+
+  return await Promise.all(cropPromises);
 };
 
 const formatSvg = async (rendering, idx, output) => {
