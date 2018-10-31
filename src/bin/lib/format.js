@@ -1,10 +1,12 @@
 import { createConverter } from "convert-svg-to-png";
-import PDFDocument from "pdfkit";
-import path from "path";
-import rimraf from "rimraf";
-import fsp from "./utils/fsp";
 import fs from "fs";
 import _ from "lodash";
+import path from "path";
+import PDFDocument from "pdfkit";
+import rimraf from "rimraf";
+import { pngname, svgname } from "./utils/filenames";
+import fsp from "./utils/fsp";
+import { insToPts, pxToPts } from "./utils/units";
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
   for (const deckKey in config) {
@@ -147,24 +149,6 @@ const drawTrimLine = (doc, startX, startY, endX, endY) => {
     .dash(5)
     .stroke("#ccc");
 };
-
-const insToPts = (s = 0) => s * 72;
-const ptsToIns = (s = 0) => s / 72;
-const insToPx = (s = 0) => s * 300;
-const pxToIns = (s = 0) => s / 300;
-const pxToPts = (s = 0) => (s / 300) * 72;
-const ptsToPx = (s = 0) => (s / 72) * 300;
-
-const svgname = (rowIdx, output) =>
-  path.join(output, `${filename(rowIdx)}.svg`);
-const pngname = (rowIdx, output) =>
-  path.join(output, `${filename(rowIdx)}.png`);
-const filename = rowIdx => `card_${pad(rowIdx, 2)}`;
-
-function pad(num, size) {
-  var s = "000000000" + num;
-  return s.substr(s.length - size);
-}
 
 const deckFolder = async (projectRoot, deckKey) => {
   const output = path.join(projectRoot, "output");
