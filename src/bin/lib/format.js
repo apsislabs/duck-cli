@@ -65,7 +65,7 @@ const formatPng = async (converter, rendering, idx, output) => {
     height: rendering.height
   });
 
-  fs.writeFileSync(pngname(idx, output), png);
+  await fsp.writeFile(pngname(idx, output), png);
 };
 
 const formatPdf = async (pngPaths, out, config) => {
@@ -82,10 +82,12 @@ const formatPdf = async (pngPaths, out, config) => {
 
   const rows = _.chunk(pngPaths, cardsPerRow);
   const pages = _.chunk(rows, rowsPerPage);
+
   const docConfig = {
     layout: "landscape",
     size: [docHeight, docWidth]
   };
+
   return new Promise((res, err) => {
     const doc = new PDFDocument(docConfig);
     const outPath = path.join(out, "out.pdf");
