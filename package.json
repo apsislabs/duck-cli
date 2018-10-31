@@ -4,8 +4,13 @@
   "description": "",
   "main": "dist/components/index.js",
   "scripts": {
+    "clean": "rimraf dist",
+    "format": "prettier es5 --write '{src,test,examples}/**/*.js'",
     "build": "babel src -d dist",
-    "watch": "babel src --watch -d dist"
+    "watch": "babel src --watch -d dist",
+    "prewatch": "npm run clean",
+    "prebuild": "npm run clean",
+    "preversion": "npm run build"
   },
   "bin": {
     "duck": "./cli.js"
@@ -23,6 +28,7 @@
     "babel-polyfill": "^6.26.0",
     "canvas": "^2.0.1",
     "chalk": "^2.4.1",
+    "chokidar": "^2.0.4",
     "clear": "^0.1.0",
     "convert-svg-to-png": "^0.4.0",
     "globby": "^8.0.1",
@@ -30,13 +36,24 @@
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.11",
     "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
     "papaparse": "^4.6.1",
+    "prop-types": "^15.6.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "rimraf": "^2.6.2",
     "units-css": "^0.4.0",
     "yoga-layout": "^1.9.3"
   },
-  "peerDependencies": {}
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "devDependencies": {
+    "husky": "^1.1.2",
+    "prettier": "^1.14.3",
+    "pretty-quick": "^1.8.0"
+  }
 }

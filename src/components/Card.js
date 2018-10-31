@@ -1,14 +1,18 @@
 import React from "react";
 import { CutArea } from "./CutArea";
+import { DeckConsumer } from "./DeckContext";
+import PropTypes from "prop-types";
 
-export const Card = ({
-  safeZone = true,
-  cut = true,
-  width = 850,
-  height = 1125,
-  children,
-  ...props
-}) => {
+const BaseCard = ({ safeZone = true, cut = true, children, ...props }) => {
+  const {
+    width,
+    height,
+    cutMargin = 37.5,
+    safeMargin = 75,
+    cutColor = "red",
+    safeColor = "blue"
+  } = props;
+
   const CardBackground = (
     <rect
       id="background"
@@ -25,10 +29,10 @@ export const Card = ({
   const CutZone = (
     <CutArea
       id="cut"
-      margin="37.5"
+      margin={cutMargin}
       width={width}
       height={height}
-      color="red"
+      color={cutColor}
       strokeDasharray={null}
     />
   );
@@ -36,10 +40,10 @@ export const Card = ({
   const SafeZone = (
     <CutArea
       id="safe_zone"
-      margin="75"
+      margin={safeMargin}
       width={width}
       height={height}
-      color="blue"
+      color={safeColor}
       strokeDasharray="3 3"
     />
   );
@@ -61,3 +65,24 @@ export const Card = ({
     </g>
   );
 };
+
+export const Card = props => (
+  <DeckConsumer>
+    {context => {
+      let newProps = { width: context.width, height: context.height, ...props };
+      return <BaseCard {...newProps} />;
+    }}
+  </DeckConsumer>
+);
+
+const cardPropTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  cutMargin: PropTypes.number,
+  safeMargin: PropTypes.number,
+  cutColor: PropTypes.string,
+  safeColor: PropTypes.string
+};
+
+BaseCard.propTypes = cardPropTypes;
+Card.propTypes = cardPropTypes;

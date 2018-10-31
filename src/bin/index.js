@@ -16,11 +16,12 @@ const argv = parseArgs(process.argv.slice(2), {
   alias: {
     h: "help",
     p: "path",
-    P: "proof"
+    P: "proof",
+    w: "watch"
   },
-  boolean: ["h", "P"],
+  boolean: ["h", "P", "w"],
   string: ["p"],
-  default: { path: "./", proof: false }
+  default: { path: "./", proof: false, watch: false }
 });
 
 const cmd = argv._[0];
