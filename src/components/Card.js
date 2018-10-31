@@ -3,7 +3,15 @@ import { CutArea } from "./CutArea";
 import { DeckConsumer } from "./lib/DeckContext";
 
 const BaseCard = ({ safeZone = true, cut = true, children, ...props }) => {
-  const { width, height } = props;
+  const {
+    width,
+    height,
+    cutMargin = 37.5,
+    safeMargin = 75,
+    cutColor = "red",
+    safeColor = "blue"
+  } = props;
+
   const CardBackground = (
     <rect
       id="background"
@@ -20,10 +28,10 @@ const BaseCard = ({ safeZone = true, cut = true, children, ...props }) => {
   const CutZone = (
     <CutArea
       id="cut"
-      margin="37.5"
+      margin={cutMargin}
       width={width}
       height={height}
-      color="red"
+      color={cutColor}
       strokeDasharray={null}
     />
   );
@@ -31,10 +39,10 @@ const BaseCard = ({ safeZone = true, cut = true, children, ...props }) => {
   const SafeZone = (
     <CutArea
       id="safe_zone"
-      margin="75"
+      margin={safeMargin}
       width={width}
       height={height}
-      color="blue"
+      color={safeColor}
       strokeDasharray="3 3"
     />
   );
