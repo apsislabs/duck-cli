@@ -1,10 +1,10 @@
-import { resolve, join } from "path";
 import chalk from "chalk";
-import { existsSync } from "fs";
-import { logBuildHelp } from "./helps";
-import { printAndExit } from "../lib/utils/logger";
-import { build } from "../lib/build";
 import chokidar from "chokidar";
+import { existsSync } from "fs";
+import { join, resolve } from "path";
+import { build } from "../lib/build";
+import { printAndExit } from "../lib/utils/logger";
+import { logBuildHelp } from "./helps";
 
 const REQUIRED_SUBDIRS = ["data", "templates", "deck.config.yml"];
 

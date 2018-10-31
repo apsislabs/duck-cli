@@ -1,11 +1,10 @@
 import path from "path";
-import rimraf from "rimraf";
 import React from "react";
-
+import { renderToStaticMarkup } from "react-dom/server";
+import rimraf from "rimraf";
+import { DeckProvider } from "../../components/DeckContext";
 import fsp from "./utils/fsp";
 import { transformDir } from "./utils/transform";
-import { renderToStaticMarkup } from "react-dom/server";
-import { DeckProvider } from "../../components/DeckContext";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
