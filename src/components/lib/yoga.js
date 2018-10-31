@@ -1,3 +1,4 @@
+import _ from "lodash";
 import yoga from "yoga-layout";
 export const getJustifyContent = val => {
   let opts = {
@@ -8,7 +9,7 @@ export const getJustifyContent = val => {
     "space-between": yoga.JUSTIFY_SPACE_BETWEEN,
     "space-evenly": yoga.JUSTIFY_SPACE_EVENLY
   };
-  return opts[val] || yoga.JUSTIFY_FLEX_START;
+  return _.get(opts, val, yoga.JUSTIFY_FLEX_START);
 };
 export const getAlign = val => {
   let opts = {
@@ -21,7 +22,7 @@ export const getAlign = val => {
     "space-between": yoga.ALIGN_SPACE_BETWEEN,
     stretch: yoga.ALIGN_STRETCH
   };
-  return opts[val] || yoga.ALIGN_FLEX_START;
+  return _.get(opts, val, yoga.ALIGN_FLEX_START);
 };
 export const getFlexDirection = val => {
   let opts = {
@@ -31,7 +32,7 @@ export const getFlexDirection = val => {
     row: yoga.FLEX_DIRECTION_ROW,
     "row-reverse": yoga.FLEX_DIRECTION_ROW_REVERSE
   };
-  return opts[val] || yoga.FLEX_DIRECTION_ROW;
+  return _.get(opts, val, yoga.FLEX_DIRECTION_ROW);
 };
 const getDirection = val => {
   let opts = {
@@ -39,7 +40,7 @@ const getDirection = val => {
     ltr: yoga.DIRECTION_LTR,
     rtl: yoga.DIRECTION_RTL
   };
-  return opts[val] || yoga.DIRECTION_INHERIT;
+  return _.get(opts, val, yoga.DIRECTION_INHERIT);
 };
 export const getFlexWrap = val => {
   let opts = {
@@ -47,7 +48,7 @@ export const getFlexWrap = val => {
     wrap: yoga.WRAP_WRAP,
     "wrap-reverse": yoga.WRAP_WRAP_REVERSE
   };
-  return opts[val] || yoga.WRAP_WRAP;
+  return _.get(opts, val, yoga.WRAP_WRAP);
 };
 export const getEdge = val => {
   let opts = {
@@ -61,14 +62,14 @@ export const getEdge = val => {
     vertical: yoga.EDGE_VERTICAL,
     all: yoga.EDGE_ALL
   };
-  return opts[val] || yoga.EDGE_ALL;
+  return _.get(opts, val, yoga.EDGE_ALL);
 };
 export const getDisplay = val => {
   let opts = {
     flex: yoga.DISPLAY_FLEX,
     none: yoga.DISPLAY_NONE
   };
-  return opts[val] || yoga.DISPLAY_FLEX;
+  return _.get(opts, val, yoga.DISPLAY_FLEX);
 };
 const getUnit = val => {
   let opts = {
