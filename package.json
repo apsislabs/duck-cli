@@ -5,6 +5,7 @@
   "main": "dist/components/index.js",
   "scripts": {
     "clean": "rimraf dist",
+    "format": "prettier es5 --write '{src,test,examples}/**/*.js'",
     "build": "babel src -d dist",
     "watch": "babel src --watch -d dist",
     "prewatch": "npm run clean",
