@@ -39,15 +39,19 @@ const transpileTemplates = async (projectRoot, tmpPath) => {
   await transformDir(projectRoot, tmpPath, { babel });
 };
 
+const loadTemplate = filePath => {
+  delete require.cache[path.resolve(filePath)];
+  return require(filePath).default;
+};
+
 const renderTemplate = async (templatesPath, config, data) => {
   const templatePath = path.resolve(
     path.join(templatesPath, config.templateFront)
   );
 
-  const Card = require(templatePath).default;
+  const Card = loadTemplate(templatePath);
 
   const renderings = [];
-
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
     const row = data[rowIdx];
 

@@ -4,6 +4,8 @@ import { existsSync } from "fs";
 import { logBuildHelp } from "./helps";
 import { printAndExit } from "../lib/utils/logger";
 import { build } from "../lib/build";
+import chokidar from "chokidar";
+import invalidate from "invalidate-module";
 
 const REQUIRED_SUBDIRS = ["data", "templates", "deck.config.yml"];
 
@@ -29,6 +31,49 @@ export const Build = async args => {
 
   // Build
   await build(dir);
+
+  if (args.watch) {
+    await new Promise((res, rej) => {
+      const watcher = chokidar.watch(resolve("./templates/"), {
+        ignored: ["node_modules", /(^|[\/\\])\../],
+        ignoreInitial: true,
+        persistent: true
+      });
+
+      // Add event listeners.
+      const rebuild = async p => {
+        console.log(chalk.green(`\n=> Rebuilding ${dir}\n`));
+        await build(dir);
+      };
+
+      // Handle new and modified files
+      watcher.on("add", rebuild);
+      watcher.on("change", rebuild);
+
+      // Handle removing files
+      watcher.on("unlink", p => {
+        watcher.unwatch(p);
+        rebuild(p);
+      });
+
+      // Handle errors
+      watcher.on("error", error => {
+        console.log(chalk.red(error));
+        rej(error);
+      });
+
+      // Handle interrupts
+      process.on("SIGINT", () => {
+        watcher.close();
+        res();
+      });
+
+      process.on("SIGTERM", () => {
+        watcher.close();
+        res();
+      });
+    });
+  }
 
   // Done
   printAndExit(chalk.green("Build complete!"));
