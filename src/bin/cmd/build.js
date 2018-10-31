@@ -1,12 +1,13 @@
 import chalk from "chalk";
+import _ from "lodash";
 import chokidar from "chokidar";
 import { existsSync } from "fs";
 import { join, resolve } from "path";
 import { build } from "../lib/build";
 import { printAndExit } from "../lib/utils/logger";
 import { logBuildHelp } from "./helps";
-
-const REQUIRED_SUBDIRS = ["data", "templates", "deck.config.yml"];
+import { clearCache } from "../lib/utils/require";
+import { REQUIRED_SUBDIRS, TMP_FOLDER } from "../lib/constants";
 
 export const Build = async args => {
   if (args.help) {
@@ -44,6 +45,10 @@ export const Build = async args => {
 
       // Add event listeners.
       const rebuild = async p => {
+        // TODO: This is a weird constant
+        const pathRegex = new RegExp(`${resolve(`./${TMP_FOLDER}`)}.*`);
+        clearCache(pathRegex);
+
         console.log(chalk.green(`\n=> Rebuilding ${dir}\n`));
         await build(dir);
       };

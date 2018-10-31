@@ -28,6 +28,7 @@
     "babel-polyfill": "^6.26.0",
     "canvas": "^2.0.1",
     "chalk": "^2.4.1",
+    "chokidar": "^2.0.4",
     "clear": "^0.1.0",
     "convert-svg-to-png": "^0.4.0",
     "globby": "^8.0.1",
@@ -43,8 +44,7 @@
     "react-dom": "^16.6.0",
     "rimraf": "^2.6.2",
     "units-css": "^0.4.0",
-    "yoga-layout": "^1.9.3",
-    "chokidar": "^2.0.4"
+    "yoga-layout": "^1.9.3"
   },
   "husky": {
     "hooks": {
