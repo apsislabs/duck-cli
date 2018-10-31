@@ -65,7 +65,7 @@ const renderTemplate = async (templatesPath, config, data) => {
         </g>
 
         <DeckProvider value={config}>
-          <Card {...row} config={config} data={data} rowIndex={rowIdx} />
+          <Card {...row} config={config} deck={data} cardIndex={rowIdx} />
         </DeckProvider>
       </svg>
     );
