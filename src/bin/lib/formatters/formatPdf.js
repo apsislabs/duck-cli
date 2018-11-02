@@ -3,6 +3,7 @@ import Jimp from "jimp";
 import _ from "lodash";
 import path from "path";
 import PDFDocument from "pdfkit";
+import ProgressBar from "progress";
 import { insToPts, pxToPts } from "../utils/units";
 
 export const formatPdf = async (pngPaths, out, config) => {
@@ -44,6 +45,9 @@ export const formatPdf = async (pngPaths, out, config) => {
   return new Promise((res, err) => {
     const outPath = path.join(out, "out.pdf");
     const pdfStream = fs.createWriteStream(outPath);
+    const pdfProgress = new ProgressBar("Format PDF :bar (:current/:total)", {
+      total: pngBuffers.length
+    });
 
     try {
       doc.pipe(pdfStream);
@@ -72,6 +76,8 @@ export const formatPdf = async (pngPaths, out, config) => {
               width: cardWidthPts,
               height: cardHeightPts
             });
+
+            pdfProgress.tick();
 
             // Last Card in Row
             if (k + 1 === row.length) {
@@ -102,13 +108,18 @@ export const formatPdf = async (pngPaths, out, config) => {
 };
 
 const cropImages = async (buffers, m, w, h) => {
+  const cropBar = new ProgressBar("Crop Images :bar (:current/:total)", {
+    total: buffers.length
+  });
+
   const promises = _.map(buffers, buff => {
     return Jimp.read(buff).then(i => {
+      cropBar.tick();
       return i.crop(m, m, w, h).getBufferAsync(Jimp.MIME_PNG);
     });
   });
 
-  return Promise.all(promises);
+  return await Promise.all(promises);
 };
 
 const drawTrimLine = (doc, startX, startY, endX, endY) => {

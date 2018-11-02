@@ -42,6 +42,7 @@
     "papaparse": "^4.6.1",
     "pdfkit": "^0.8.3",
     "png-crop": "0.0.2",
+    "progress": "^2.0.1",
     "prop-types": "^15.6.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",

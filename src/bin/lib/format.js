@@ -5,6 +5,7 @@ import { formatPdf } from "./formatters/formatPdf";
 import { formatPng } from "./formatters/formatPng";
 import { formatSvg } from "./formatters/formatSvg";
 import { pngname } from "./utils/filenames";
+import ProgressBar from "progress";
 import fsp from "./utils/fsp";
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
@@ -29,15 +30,27 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   const pngPaths = [];
   const converter = createConverter();
 
+  const svgBar = new ProgressBar("Render SVG :bar (:current/:total)", {
+    total: renderings.length
+  });
+
+  const pngBar = new ProgressBar("Render PNG :bar (:current/:total)", {
+    total: renderings.length
+  });
+
   try {
     for (let i = 0; i < renderings.length; i++) {
       if (svg) {
-        promises.push(formatSvg(renderings[i], i, output));
+        promises.push(
+          formatSvg(renderings[i], i, output).then(() => svgBar.tick())
+        );
       }
 
       if (png || pdf) {
         pngPaths.push(pngname(i, output));
-        await formatPng(converter, renderings[i], i, output);
+        await formatPng(converter, renderings[i], i, output).then(() =>
+          pngBar.tick()
+        );
       }
     }
 
