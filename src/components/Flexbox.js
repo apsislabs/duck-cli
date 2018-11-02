@@ -10,7 +10,22 @@ import {
   getJustifyContent
 } from "../lib/yoga";
 
-const setNodePadding = (val, dir) => {
+const setPercent = (node, percentKey, nonPercentKey, fallbackKey, value) => {
+  if (value) {
+    const parsedValue = parseFloat(value, 10);
+    const isPercent = value.toString().indexOf("%") !== -1;
+
+    if (isPercent) {
+      node[percentKey](parsedValue);
+    } else {
+      node[nonPercentKey](parsedValue);
+    }
+  } else {
+    node[fallbackKey]();
+  }
+};
+
+const setNodePadding = (node, val, dir) => {
   const edge = getEdge(dir);
   if (val) {
     if (val === "auto") {
@@ -23,7 +38,7 @@ const setNodePadding = (val, dir) => {
   }
 };
 
-const setNodeMargin = (val, dir) => {
+const setNodeMargin = (node, val, dir) => {
   const edge = getEdge(dir);
   if (val) {
     if (val === "auto") {
@@ -100,11 +115,13 @@ const setStyles = (node, style = {}) => {
     node.setMaxHeight(style.maxHeight);
   }
 
-  if (style.height) {
-    node.setHeight(style.height);
-  } else {
-    node.setHeightAuto();
-  }
+  setPercent(
+    node,
+    "setHeightPercent",
+    "setHeight",
+    "setHeightAuto",
+    style.height
+  );
 
   // Set Width
   if (style.minWidth) {
@@ -115,11 +132,7 @@ const setStyles = (node, style = {}) => {
     node.setMaxWidth(style.maxWidth);
   }
 
-  if (style.width) {
-    node.setWidth(style.width);
-  } else {
-    node.setWidthAuto();
-  }
+  setPercent(node, "setWidthPercent", "setWidth", "setWidthAuto", style.width);
 
   // Borders
   if (style.borderWidth) {
@@ -127,20 +140,20 @@ const setStyles = (node, style = {}) => {
   }
 
   // Margins
-  setNodeMargin(style.marginTop, "top");
-  setNodeMargin(style.marginRight, "right");
-  setNodeMargin(style.marginBottom, "bottom");
-  setNodeMargin(style.marginleft, "left");
+  setNodeMargin(node, style.marginTop, "top");
+  setNodeMargin(node, style.marginRight, "right");
+  setNodeMargin(node, style.marginBottom, "bottom");
+  setNodeMargin(node, style.marginleft, "left");
 
   if (style.margin) {
     node.setMargin(getEdge("all"), style.margin);
   }
 
   // Padding
-  setNodePadding(style.paddingTop, "top");
-  setNodePadding(style.paddingRight, "right");
-  setNodePadding(style.paddingBottom, "bottom");
-  setNodePadding(style.paddingleft, "left");
+  setNodePadding(node, style.paddingTop, "top");
+  setNodePadding(node, style.paddingRight, "right");
+  setNodePadding(node, style.paddingBottom, "bottom");
+  setNodePadding(node, style.paddingleft, "left");
 
   if (style.padding) {
     node.setPadding(getEdge("all"), style.padding);
