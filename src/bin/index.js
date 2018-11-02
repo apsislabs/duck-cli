@@ -29,7 +29,7 @@ const argv = parseArgs(process.argv.slice(2), {
     w: "watch",
     v: "verbose"
   },
-  boolean: ["h", "P", "w"],
+  boolean: ["h", "P", "w", "v"],
   string: ["p"],
   default: { path: "./", proof: false, watch: false, verbose: false }
 });
