@@ -1,11 +1,12 @@
 import fsp from "./utils/fsp";
 import path from "path";
 import yaml from "js-yaml";
+import { verboseLog } from "./utils/logger";
 
 export const readConfig = async projectRoot => {
   const configFile = path.join(projectRoot, "deck.config.yml");
 
-  console.log(`...Looking for config in file ${configFile}`);
+  verboseLog(`...Looking for config in file ${configFile}`);
 
   try {
     const rawConfig = yaml.safeLoad(await fsp.readFile(configFile, "utf8"));

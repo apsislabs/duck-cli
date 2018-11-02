@@ -2,6 +2,7 @@ import Papa from "papaparse";
 import fsp from "./utils/fsp";
 import path from "path";
 import _ from "lodash";
+import { verboseLog } from "./utils/logger";
 
 export const readData = async (projectRoot, config) => {
   const data = {};
@@ -17,7 +18,7 @@ const parseCsv = async (projectRoot, deckConfig, deckKey) => {
   const dataFile = deckConfig.data;
   const csvFile = path.join(projectRoot, "data", dataFile);
 
-  console.log(`...looking for CSV file for deck ${deckKey} in ${csvFile}`);
+  verboseLog(`...looking for CSV file for deck ${deckKey} in ${csvFile}`);
   const csv = await fsp.readFile(csvFile, "utf8");
 
   const csvResult = Papa.parse(csv, { header: true });

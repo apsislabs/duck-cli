@@ -33,6 +33,8 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   let renderingStream = miss.from.obj(renderings);
 
   return await new Promise((res, rej) => {
+    process.on("SIGINT", rej);
+
     const finalize = async err => {
       if (converter) converter.destroy();
       if (err) rej(err);
