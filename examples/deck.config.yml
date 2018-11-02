@@ -1,5 +1,10 @@
-deck_one:
-  width: 850
+deck:
+  # explode: qty
+  width: 825
   height: 1125
-  explode: qty
-  format: ["svg", "png"]
+  pdf:
+    layout: letter
+    trim_lines: true
+    bleed: 37.5
+  format:
+    - svg

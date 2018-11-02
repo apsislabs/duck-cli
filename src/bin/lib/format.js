@@ -1,6 +1,12 @@
 import { createConverter } from "convert-svg-to-png";
+import miss from "mississippi";
 import path from "path";
 import rimraf from "rimraf";
+import { nullStream } from "./streams/nullStream";
+import { cropStream } from "./streams/cropStream";
+import { pdfStream } from "./streams/pdfStream";
+import { pngStream } from "./streams/pngStream";
+import { svgStream } from "./streams/svgStream";
 import fsp from "./utils/fsp";
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
@@ -8,60 +14,65 @@ export const formatCards = async (projectRoot, config, data, renderings) => {
     await formatDeck(
       projectRoot,
       config[deckKey],
-      data[deckKey],
       renderings[deckKey],
       deckKey
     );
   }
 };
 
-const formatDeck = async (projectRoot, config, data, renderings, deckKey) => {
+const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   const output = await deckFolder(projectRoot, deckKey);
 
   const svg = config.format.includes("svg");
   const png = config.format.includes("png");
+  const pdf = config.format.includes("pdf");
 
-  const promises = [];
-  const converter = createConverter();
+  const converter = pdf || png ? createConverter() : null;
+  const size = renderings.length;
 
-  try {
-    console.log("...saving files");
-    for (let i = 0; i < renderings.length; i++) {
-      process.stdout.write(".");
-      if (svg) {
-        promises.push(formatSvg(renderings[i], i, output));
-      }
+  let renderingStream = miss.from.obj(renderings);
 
-      if (png) {
-        await formatPng(converter, renderings[i], i, output);
-      }
+  return await new Promise((res, rej) => {
+    process.on("SIGINT", rej);
+
+    const finalize = async err => {
+      if (converter) converter.destroy();
+      if (err) rej(err);
+      res();
+    };
+
+    if (svg) {
+      renderingStream = renderingStream.pipe(
+        svgStream({
+          output,
+          size
+        })
+      );
     }
-  } finally {
-    converter.destroy();
-    process.stdout.write("\n");
-  }
 
-  await Promise.all(promises);
-};
+    if ((png || pdf) && converter) {
+      renderingStream = renderingStream.pipe(
+        pngStream({
+          output,
+          converter,
+          size
+        })
+      );
+    }
 
-const formatSvg = async (rendering, idx, output) => {
-  await fsp.writeFile(svgname(idx, output), rendering.svg);
-};
+    if (pdf) {
+      renderingStream = renderingStream
+        .pipe(cropStream({ config, size }))
+        .pipe(pdfStream({ output, config }));
+    }
 
-const formatPng = async (converter, rendering, idx, output) => {
-  const png = await converter.convert(rendering.svg, {
-    width: rendering.width,
-    height: rendering.height
+    renderingStream
+      .pipe(nullStream())
+      .on("error", finalize)
+      .on("end", finalize)
+      .on("finish", finalize);
   });
-
-  await fsp.writeFile(pngname(idx, output), png);
 };
-
-const svgname = (rowIdx, output) =>
-  path.join(output, `${filename(rowIdx)}.svg`);
-const pngname = (rowIdx, output) =>
-  path.join(output, `${filename(rowIdx)}.png`);
-const filename = rowIdx => `card_${rowIdx}`;
 
 const deckFolder = async (projectRoot, deckKey) => {
   const output = path.join(projectRoot, "output");

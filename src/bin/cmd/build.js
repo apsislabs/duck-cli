@@ -2,7 +2,7 @@ import chalk from "chalk";
 import _ from "lodash";
 import chokidar from "chokidar";
 import { existsSync } from "fs";
-import { join, resolve } from "path";
+import { join, resolve, basename } from "path";
 import { build } from "../lib/build";
 import { printAndExit } from "../lib/utils/logger";
 import { logBuildHelp } from "./helps";
@@ -16,11 +16,11 @@ export const Build = async args => {
 
   // Start
   const dir = resolve(args.path);
-  console.log(chalk.green(`Building decks in ${dir}`));
+  console.log(chalk.green(`🛠  Building decks in ${basename(dir)}\n`));
 
   // Check Dependencies
   if (!existsSync(dir)) {
-    printAndExit(chalk.red(`No such directory ${dir}.`));
+    printAndExit(chalk.red(`No such directory ${basename(dir)}.`));
   }
 
   REQUIRED_SUBDIRS.forEach(subdir => {
@@ -30,7 +30,12 @@ export const Build = async args => {
   });
 
   // Build
-  await build(dir);
+  try {
+    await build(dir);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 
   if (args.watch) {
     await new Promise((res, rej) => {
@@ -49,7 +54,7 @@ export const Build = async args => {
         const pathRegex = new RegExp(`${resolve(`./${TMP_FOLDER}`)}.*`);
         clearCache(pathRegex);
 
-        console.log(chalk.green(`\n=> Rebuilding ${dir}\n`));
+        console.log(chalk.green(`\n🛠  Rebuilding ${basename(dir)}\n`));
         await build(dir);
       };
 
@@ -83,5 +88,5 @@ export const Build = async args => {
   }
 
   // Done
-  printAndExit(chalk.green("Build complete!"));
+  printAndExit(chalk.green("✨ Build complete!"));
 };
