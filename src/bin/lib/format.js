@@ -31,6 +31,12 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   const size = renderings.length;
   let renderingStream = miss.from.obj(renderings);
 
+  const finalize = async err => {
+    if (err) rej(err);
+    if (converter) converter.destroy();
+    res();
+  };
+
   return await new Promise((res, rej) => {
     if (svg) {
       renderingStream = renderingStream.pipe(
@@ -60,11 +66,8 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
     renderingStream
       .pipe(capStream())
       .on("error", rej)
-      .on("finish", async err => {
-        if (err) rej(err);
-        converter.destroy();
-        res();
-      });
+      .on("end", finalize)
+      .on("finish", finalize);
   });
 };
 
