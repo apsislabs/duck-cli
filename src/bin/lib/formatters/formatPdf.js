@@ -1,12 +1,11 @@
 import fs from "fs";
-import Jimp from "jimp";
 import _ from "lodash";
 import path from "path";
 import PDFDocument from "pdfkit";
 import { progressBar } from "../utils/progressBar";
 import { insToPts, pxToPts } from "../utils/units";
 
-export const formatPdf = async (pngPaths, out, config) => {
+export const formatPdf = async (pngBuffers, out, config) => {
   let {
     layout = "landscape",
     size = "letter",
@@ -17,14 +16,12 @@ export const formatPdf = async (pngPaths, out, config) => {
   const doc = new PDFDocument(docConfig);
 
   // Get and crop images, if needed
-  let pngBuffers = _.map(pngPaths, p => fs.readFileSync(p));
   let cardWidthPx = config.width;
   let cardHeightPx = config.height;
 
   if (bleed) {
     cardWidthPx = cardWidthPx - bleed * 2;
     cardHeightPx = cardHeightPx - bleed * 2;
-    pngBuffers = await cropImages(pngBuffers, bleed, cardWidthPx, cardHeightPx);
   }
 
   // Calculate all layout values
@@ -105,19 +102,6 @@ export const formatPdf = async (pngPaths, out, config) => {
 
     pdfStream.addListener("finish", res);
   });
-};
-
-const cropImages = async (buffers, m, w, h) => {
-  const cropBar = progressBar("Crop", buffers.length);
-
-  const promises = _.map(buffers, buff => {
-    return Jimp.read(buff).then(i => {
-      cropBar.tick();
-      return i.crop(m, m, w, h).getBufferAsync(Jimp.MIME_PNG);
-    });
-  });
-
-  return await Promise.all(promises);
 };
 
 const drawTrimLine = (doc, startX, startY, endX, endY) => {
