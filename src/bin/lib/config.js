@@ -2,9 +2,10 @@ import fsp from "./utils/fsp";
 import path from "path";
 import yaml from "js-yaml";
 import { verboseLog } from "./utils/logger";
+import { CONF_FILE } from "./constants";
 
 export const readConfig = async projectRoot => {
-  const configFile = path.join(projectRoot, "deck.config.yml");
+  const configFile = path.join(projectRoot, CONF_FILE);
 
   verboseLog(`...Looking for config in file ${configFile}`);
 

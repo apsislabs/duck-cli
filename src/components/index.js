@@ -7,4 +7,6 @@ import { Image } from "./Image";
 import { Rect } from "./Rect";
 import { Text } from "./Text";
 
-export { Flexbox, Card, Circle, CutArea, Group, Image, Rect, Text };
+import { asset } from "../lib/assetPath";
+
+export { asset, Card, Circle, CutArea, Flexbox, Group, Image, Rect, Text };

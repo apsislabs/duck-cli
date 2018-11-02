@@ -16,7 +16,11 @@ export const Build = async args => {
 
   // Start
   const dir = resolve(args.path);
-  console.log(chalk.green(`🛠  Building decks in ${basename(dir)}\n`));
+  if (args.watch) {
+    console.log(chalk.green(`🦆  Watching decks in ${basename(dir)}...`));
+  } else {
+    console.log(chalk.green(`🦆  Building decks in ${basename(dir)}...`));
+  }
 
   // Check Dependencies
   if (!existsSync(dir)) {
@@ -53,8 +57,7 @@ export const Build = async args => {
         // TODO: This is a weird constant
         const pathRegex = new RegExp(`${resolve(`./${TMP_FOLDER}`)}.*`);
         clearCache(pathRegex);
-
-        console.log(chalk.green(`\n🛠  Rebuilding ${basename(dir)}\n`));
+        console.log(chalk.green(`\n🛠  Rebuilding ${basename(dir)}`));
         await build(dir);
       };
 

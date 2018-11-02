@@ -8,6 +8,7 @@ import { safeDump } from "js-yaml";
 import { logInitHelp } from "./helps";
 import { printAndExit } from "../lib/utils/logger";
 import { promisify } from "util";
+import { CONF_FILE } from "../lib/constants";
 
 const pncp = promisify(ncp);
 
@@ -104,7 +105,7 @@ export const Init = async args => {
     printAndExit(err);
   }
 
-  const configPath = path.join(destDir, "deck.config.yml");
+  const configPath = path.join(destDir, CONF_FILE);
 
   // Write config file
   fs.writeFileSync(configPath, safeDump(getConfig(answers)));
