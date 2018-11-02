@@ -1,16 +1,13 @@
 import { createConverter } from "convert-svg-to-png";
+import miss from "mississippi";
 import path from "path";
 import rimraf from "rimraf";
-import intoStream from "into-stream";
-import through2 from "through2";
-import { formatPdf } from "./formatters/formatPdf";
-import { formatPng } from "./formatters/formatPng";
-import { formatSvg } from "./formatters/formatSvg";
-import { pngname } from "./utils/filenames";
+import { cropStream } from "./streams/cropStream";
+import { pdfStream } from "./streams/pdfStream";
+import { pngStream } from "./streams/pngStream";
+import { svgStream } from "./streams/svgStream";
 import fsp from "./utils/fsp";
-import Jimp from "jimp";
-
-import { progressBar } from "./utils/progressBar";
+import { capStream } from "./streams/capStream";
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
   for (const deckKey in config) {
@@ -31,66 +28,41 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   const pdf = config.format.includes("pdf");
 
   const converter = createConverter();
-  const svgBar = progressBar("SVG", renderings.length);
-  const pngBar = progressBar("PNG", renderings.length);
-  const cropBar = progressBar("Crop", renderings.length);
-
-  const renderingStream = intoStream.obj(renderings);
-
-  // Stream renderings
-  // Stream SVG buffers to writing file to disk
-  // Stream SVG buffers to conversion to PNG buffer
-  // Stream PNG buffers to cropping PNG buffers if crop
-  // After Stream end write to PDF if PDF
-  let svgIndex = 0;
-  let pngIndex = 0;
-  let pngBuffers = [];
+  const size = renderings.length;
+  let renderingStream = miss.from.obj(renderings);
 
   return await new Promise((res, rej) => {
+    if (svg) {
+      renderingStream = renderingStream.pipe(
+        svgStream({
+          output,
+          size
+        })
+      );
+    }
+
+    if (png || pdf) {
+      renderingStream = renderingStream.pipe(
+        pngStream({
+          output,
+          converter,
+          size
+        })
+      );
+    }
+
+    if (pdf) {
+      renderingStream = renderingStream
+        .pipe(cropStream({ config, size }))
+        .pipe(pdfStream({ output, config }));
+    }
+
     renderingStream
-      .pipe(
-        through2.obj(async (chunk, enc, cb) => {
-          formatSvg(chunk, svgIndex, output).then(() => svgBar.tick());
-          svgIndex++;
-
-          cb(null, chunk);
-        })
-      )
-      .pipe(
-        through2.obj(async (chunk, enc, cb) => {
-          let pngBuffer = await formatPng(converter, chunk);
-          fsp
-            .writeFile(pngname(pngIndex, output), pngBuffer)
-            .then(pngBar.tick());
-
-          pngIndex++;
-          cb(null, pngBuffer);
-        })
-      )
-      .pipe(
-        through2.obj(async (chunk, enc, cb) => {
-          if (config.pdf.bleed) {
-            let croppedBuffer = await Jimp.read(chunk).then(i => {
-              cropBar.tick();
-              return i.crop(5, 5, 200, 200).getBufferAsync(Jimp.MIME_PNG);
-            });
-
-            pngBuffers.push(croppedBuffer);
-            cb(null, croppedBuffer);
-          } else {
-            pngBuffers.push(chunk);
-            cb(null, chunk);
-          }
-        })
-      )
-      .pipe(
-        through2.obj((chunk, enc, cb) => {
-          cb(null);
-        })
-      )
-      .on("finish", async () => {
+      .pipe(capStream())
+      .on("error", rej)
+      .on("finish", async err => {
+        if (err) rej(err);
         converter.destroy();
-        await formatPdf(pngBuffers, output, config);
         res();
       });
   });
