@@ -1,5 +1,6 @@
 const globby = require("globby");
 const path = require("path");
+import fs from "fs";
 import fsp from "./fsp";
 import { transformFileAsync } from "@babel/core";
 
@@ -29,7 +30,8 @@ export const transform = async (file, src, dest, { babel, onFile } = {}) => {
   const filePath = path.join(src, file);
   const destPath = path.join(dest, file);
   const { code } = await transformFileAsync(filePath, babel);
-  return fsp.writeFile(destPath, code).then(() => {
+
+  return fsp.writeWithDirs(destPath, code).then(() => {
     onFile && onFile(file);
   });
 };

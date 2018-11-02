@@ -1,4 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
+import PropTypes from "prop-types";
+import { svgPropTypes } from "../lib/propTypes";
+
 export const Image = ({ src, ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -9,3 +12,8 @@ export const Image = ({ src, ...props }) => (
     <image xlinkHref={src} {...props} />
   </svg>
 );
+
+Image.propTypes = {
+  ...svgPropTypes,
+  src: PropTypes.string.isRequired
+};

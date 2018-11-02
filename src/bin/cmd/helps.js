@@ -21,6 +21,7 @@ export const logBuildHelp = () => {
     duck build --help   display help
     duck build --path   set the path to build from
     duck build --proof  include proof lines
+    duck build --watch  rebuild on file changes
   `);
 };
 

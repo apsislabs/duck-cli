@@ -1,16 +1,17 @@
 import path from "path";
-import rimraf from "rimraf";
 import React from "react";
-
+import { renderToStaticMarkup } from "react-dom/server";
+import rimraf from "rimraf";
+import { DeckProvider } from "../../components/DeckContext";
 import fsp from "./utils/fsp";
 import { transformDir } from "./utils/transform";
-import { renderToStaticMarkup } from "react-dom/server";
+import { TMP_FOLDER } from "./constants";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
 
   const templatesPath = path.join(projectRoot, "templates");
-  const tmpPath = path.join(projectRoot, "_tmp");
+  const tmpPath = path.join(projectRoot, TMP_FOLDER);
 
   await transpileTemplates(templatesPath, tmpPath);
 
@@ -38,15 +39,18 @@ const transpileTemplates = async (projectRoot, tmpPath) => {
   await transformDir(projectRoot, tmpPath, { babel });
 };
 
+const loadTemplate = filePath => {
+  return require(filePath).default;
+};
+
 const renderTemplate = async (templatesPath, config, data) => {
   const templatePath = path.resolve(
     path.join(templatesPath, config.templateFront)
   );
 
-  const Card = require(templatePath).default;
+  const Card = loadTemplate(templatePath);
 
   const renderings = [];
-
   for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
     const row = data[rowIdx];
 
@@ -62,7 +66,10 @@ const renderTemplate = async (templatesPath, config, data) => {
             fill="none"
           />
         </g>
-        <Card {...row} />
+
+        <DeckProvider value={config}>
+          <Card {...row} config={config} deck={data} cardIndex={rowIdx} />
+        </DeckProvider>
       </svg>
     );
 
