@@ -12,14 +12,13 @@ export const formatCards = async (projectRoot, config, data, renderings) => {
     await formatDeck(
       projectRoot,
       config[deckKey],
-      data[deckKey],
       renderings[deckKey],
       deckKey
     );
   }
 };
 
-const formatDeck = async (projectRoot, config, data, renderings, deckKey) => {
+const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   const output = await deckFolder(projectRoot, deckKey);
 
   const svg = config.format.includes("svg");

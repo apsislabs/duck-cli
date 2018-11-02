@@ -3,6 +3,7 @@ deck:
   width: 825
   height: 1125
   pdf:
+    layout: letter
     trim_lines: true
     bleed: 37.5
   format:
