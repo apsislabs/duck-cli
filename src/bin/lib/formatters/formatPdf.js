@@ -3,7 +3,7 @@ import Jimp from "jimp";
 import _ from "lodash";
 import path from "path";
 import PDFDocument from "pdfkit";
-import ProgressBar from "progress";
+import { progressBar } from "../utils/progressBar";
 import { insToPts, pxToPts } from "../utils/units";
 
 export const formatPdf = async (pngPaths, out, config) => {
@@ -45,12 +45,12 @@ export const formatPdf = async (pngPaths, out, config) => {
   return new Promise((res, err) => {
     const outPath = path.join(out, "out.pdf");
     const pdfStream = fs.createWriteStream(outPath);
-    const pdfProgress = new ProgressBar("Format PDF :bar (:current/:total)", {
-      total: pngBuffers.length
-    });
+    const pdfProgress = progressBar("PDF", pngBuffers.length);
 
     try {
       doc.pipe(pdfStream);
+
+      let cardNum = 1;
 
       // Iterate Pages
       _.forEach(pages, (rows, i) => {
@@ -108,9 +108,7 @@ export const formatPdf = async (pngPaths, out, config) => {
 };
 
 const cropImages = async (buffers, m, w, h) => {
-  const cropBar = new ProgressBar("Crop Images :bar (:current/:total)", {
-    total: buffers.length
-  });
+  const cropBar = progressBar("Crop", buffers.length);
 
   const promises = _.map(buffers, buff => {
     return Jimp.read(buff).then(i => {
