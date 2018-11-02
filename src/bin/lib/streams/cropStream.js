@@ -5,12 +5,24 @@ import { progressBar } from "../utils/progressBar";
 export const cropStream = ({ config, size = 0 }) => {
   let pngBuffers = [];
   const cropBar = progressBar("Crop", size);
+  const {
+    pdf: { bleed },
+    width,
+    height
+  } = config;
+
   return miss.through.obj(
     async (chunk, enc, cb) => {
-      if (config.pdf.bleed) {
-        let croppedBuffer = await Jimp.read(chunk).then(i => {
+      if (bleed) {
+        let cardWidthPx = width - bleed * 2;
+        let cardHeightPx = height - bleed * 2;
+
+        let croppedBuffer = await Jimp.read(chunk).then(img => {
           cropBar.tick();
-          return i.crop(5, 5, 200, 200).getBufferAsync(Jimp.MIME_PNG);
+
+          return img
+            .crop(bleed, bleed, cardWidthPx, cardHeightPx)
+            .getBufferAsync(Jimp.MIME_PNG);
         });
 
         pngBuffers.push(croppedBuffer);

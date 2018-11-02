@@ -10,10 +10,11 @@ export const pngStream = ({ output, converter, size = 0 }) => {
 
   return miss.through.obj(async (chunk, enc, cb) => {
     let pngBuffer = await formatPng(converter, chunk);
+    await fsp
+      .writeFile(pngname(pngIndex, output), pngBuffer)
+      .then(pngBar.tick());
 
-    fsp.writeFile(pngname(pngIndex, output), pngBuffer).then(pngBar.tick());
     pngIndex++;
-
     cb(null, pngBuffer);
   });
 };

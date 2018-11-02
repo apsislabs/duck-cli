@@ -2,7 +2,7 @@ import { createConverter } from "convert-svg-to-png";
 import miss from "mississippi";
 import path from "path";
 import rimraf from "rimraf";
-import { capStream } from "./streams/capStream";
+import { nullStream } from "./streams/nullStream";
 import { cropStream } from "./streams/cropStream";
 import { pdfStream } from "./streams/pdfStream";
 import { pngStream } from "./streams/pngStream";
@@ -27,14 +27,15 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   const png = config.format.includes("png");
   const pdf = config.format.includes("pdf");
 
-  const converter = createConverter();
+  const converter = pdf || png ? createConverter() : null;
   const size = renderings.length;
+
   let renderingStream = miss.from.obj(renderings);
 
   return await new Promise((res, rej) => {
     const finalize = async err => {
-      if (err) rej(err);
       if (converter) converter.destroy();
+      if (err) rej(err);
       res();
     };
 
@@ -47,7 +48,7 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
       );
     }
 
-    if (png || pdf) {
+    if ((png || pdf) && converter) {
       renderingStream = renderingStream.pipe(
         pngStream({
           output,
@@ -64,7 +65,7 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
     }
 
     renderingStream
-      .pipe(capStream())
+      .pipe(nullStream())
       .on("error", finalize)
       .on("end", finalize)
       .on("finish", finalize);
