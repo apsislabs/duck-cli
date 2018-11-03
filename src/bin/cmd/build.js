@@ -7,7 +7,12 @@ import { build } from "../lib/build";
 import { printAndExit } from "../lib/utils/logger";
 import { logBuildHelp } from "./helps";
 import { clearCache } from "../lib/utils/require";
-import { REQUIRED_SUBDIRS, TMP_FOLDER } from "../lib/constants";
+import {
+  REQUIRED_SUBDIRS,
+  TMP_FOLDER,
+  TEMPLATE_FOLDER,
+  DATA_FOLDER
+} from "../lib/constants";
 
 export const Build = async args => {
   if (args.help) {
@@ -44,7 +49,7 @@ export const Build = async args => {
   if (args.watch) {
     await new Promise((res, rej) => {
       const watcher = chokidar.watch(
-        [resolve("./templates/"), resolve("./data/")],
+        [resolve(`./${TEMPLATE_FOLDER}/`), resolve(`./${DATA_FOLDER}/`)],
         {
           ignored: ["node_modules", /(^|[\/\\])\../],
           ignoreInitial: true,

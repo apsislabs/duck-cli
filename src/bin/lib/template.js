@@ -5,12 +5,12 @@ import rimraf from "rimraf";
 import { DeckProvider } from "../../components/DeckContext";
 import fsp from "./utils/fsp";
 import { transformDir } from "./utils/transform";
-import { TMP_FOLDER } from "./constants";
+import { TMP_FOLDER, TEMPLATE_FOLDER } from "./constants";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
 
-  const templatesPath = path.join(projectRoot, "templates");
+  const templatesPath = path.join(projectRoot, TEMPLATE_FOLDER);
   const tmpPath = path.join(projectRoot, TMP_FOLDER);
 
   await transpileTemplates(templatesPath, tmpPath);
