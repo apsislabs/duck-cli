@@ -44,6 +44,8 @@
     "prop-types": "^15.6.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
     "rimraf": "^2.6.2",
     "units-css": "^0.4.0",
     "yoga-layout": "^1.9.3"

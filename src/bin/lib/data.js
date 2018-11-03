@@ -1,8 +1,14 @@
-import Papa from "papaparse";
-import fsp from "./utils/fsp";
-import path from "path";
 import _ from "lodash";
-import { verboseLog } from "./utils/logger";
+import Papa from "papaparse";
+import path from "path";
+import request from "request-promise-native";
+import { DATA_FOLDER } from "./constants";
+import fsp from "./utils/fsp";
+
+function isUrl(s) {
+  var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+  return regexp.test(s);
+}
 
 export const readData = async (projectRoot, config) => {
   const data = {};
@@ -16,22 +22,27 @@ export const readData = async (projectRoot, config) => {
 
 const parseCsv = async (projectRoot, deckConfig, deckKey) => {
   const dataFile = deckConfig.data;
-  const csvFile = path.join(projectRoot, "data", dataFile);
+  let csv = null;
 
-  verboseLog(`...looking for CSV file for deck ${deckKey} in ${csvFile}`);
-  const csv = await fsp.readFile(csvFile, "utf8");
+  try {
+    if (isUrl(dataFile)) {
+      csv = await request(dataFile);
+    } else {
+      const csvPath = path.join(projectRoot, DATA_FOLDER, dataFile);
+      csv = await fsp.readFile(csvPath, "utf8");
+    }
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 
-  const csvResult = Papa.parse(csv, { header: true });
-
-  // TODO: Error checking here
-
+  const csvResult = Papa.parse(csv, { skipEmptyLines: true, header: true });
   const data = csvResult.data;
-
   return explode(deckConfig, data);
 };
 
 const explode = (config, data) => {
-  if (!config.explode) {
+  if (!config.explode || !_.has(data, config.explode)) {
     return data;
   }
 

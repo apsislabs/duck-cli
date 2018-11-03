@@ -35,7 +35,7 @@ const processDeckConfig = (deckConfig, deckKey) => {
   }
 
   deckConfig.format = normalizeFormat(deckConfig.format || "svg");
-  deckConfig.data = deckConfig.data = `${deckKey}.csv`;
+  deckConfig.data = deckConfig.data || `${deckKey}.csv`;
   deckConfig.templateFront = deckConfig.templateFront || `${deckKey}.js`;
 };
 
