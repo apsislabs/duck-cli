@@ -1,4 +1,3 @@
-import { createConverter } from "convert-svg-to-png";
 import miss from "mississippi";
 import path from "path";
 import rimraf from "rimraf";
@@ -6,7 +5,7 @@ import { nullStream } from "./streams/nullStream";
 import { cropStream } from "./streams/cropStream";
 import { pdfStream } from "./streams/pdfStream";
 import { pngStream } from "./streams/pngStream";
-import { svgStream } from "./streams/svgStream";
+const puppeteer = require("puppeteer");
 import fsp from "./utils/fsp";
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
@@ -23,11 +22,12 @@ export const formatCards = async (projectRoot, config, data, renderings) => {
 const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   const output = await deckFolder(projectRoot, deckKey);
 
-  const svg = config.format.includes("svg");
   const png = config.format.includes("png");
   const pdf = config.format.includes("pdf");
 
-  const converter = pdf || png ? createConverter() : null;
+  // const converter = pdf || png ? createConverter() : null;
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
   const size = renderings.length;
 
   let renderingStream = miss.from.obj(renderings);
@@ -36,25 +36,16 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
     process.on("SIGINT", rej);
 
     const finalize = async err => {
-      if (converter) converter.destroy();
+      if (browser) await browser.close();
       if (err) rej(err);
       res();
     };
 
-    if (svg) {
-      renderingStream = renderingStream.pipe(
-        svgStream({
-          output,
-          size
-        })
-      );
-    }
-
-    if ((png || pdf) && converter) {
+    if ((png || pdf) && page) {
       renderingStream = renderingStream.pipe(
         pngStream({
           output,
-          converter,
+          page,
           size
         })
       );

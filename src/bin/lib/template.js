@@ -1,11 +1,12 @@
+import _ from "lodash";
 import path from "path";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import rimraf from "rimraf";
 import { DeckProvider } from "../../components/DeckContext";
+import { TEMPLATE_FOLDER, TMP_FOLDER } from "./constants";
 import fsp from "./utils/fsp";
 import { transformDir } from "./utils/transform";
-import { TMP_FOLDER, TEMPLATE_FOLDER } from "./constants";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
@@ -49,34 +50,22 @@ const renderTemplate = async (templatesPath, config, data) => {
   );
 
   const Card = loadTemplate(templatePath);
+  const Document = loadTemplate("../../components/__document");
 
-  const renderings = [];
-  for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
-    const row = data[rowIdx];
+  const renderings = _.map(data, (row, i) => {
+    const { width, height, backgroundColor } = config;
 
     const dom = (
-      <svg xmlns="http://www.w3.org/2000/svg">
-        <g>
-          <rect
-            x="0"
-            y="0"
-            width={config.width}
-            height={config.height}
-            strokeWidth="0"
-            fill="none"
-          />
-        </g>
-
+      <Document width={width} height={height} backgroundColor={backgroundColor}>
         <DeckProvider value={config}>
-          <Card {...row} config={config} deck={data} cardIndex={rowIdx} />
+          <Card {...row} config={config} deck={data} cardIndex={i} />
         </DeckProvider>
-      </svg>
+      </Document>
     );
 
-    const svg = renderToStaticMarkup(dom);
-
-    renderings.push({ svg, width: config.width, height: config.height });
-  }
+    const html = renderToStaticMarkup(dom);
+    return { html, width, height };
+  });
 
   return renderings;
 };
