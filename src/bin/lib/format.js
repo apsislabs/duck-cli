@@ -73,9 +73,6 @@ const deckFolder = async (projectRoot, deckKey) => {
     await fsp.mkdir(output);
   }
 
-  if (await fsp.exists(folder)) {
-    rimraf.sync(folder);
-  }
   if (!(await fsp.exists(folder))) {
     await fsp.mkdir(folder);
   }

@@ -1,68 +1,44 @@
-import React from "react";
-import { CutArea } from "./CutArea";
-import { DeckConsumer } from "./DeckContext";
 import PropTypes from "prop-types";
+import React from "react";
+import { ins } from "../lib/utils";
+import { Column } from "./Column";
+import { DeckConsumer } from "./DeckContext";
+import { TrimLine } from "./TrimLine";
 
-const BaseCard = ({ safeZone = true, cut = true, children, ...props }) => {
-  const {
+const BaseCard = ({
+  children,
+  cutColor = "red",
+  cutMargin = ins(0.125),
+  height,
+  safeColor = "blue",
+  safeMargin = ins(0.125),
+  width,
+  ...props
+}) => {
+  const style = {
     width,
     height,
-    cutMargin = 37.5,
-    safeMargin = 75,
-    cutColor = "red",
-    safeColor = "blue"
-  } = props;
-
-  const CardBackground = (
-    <rect
-      id="background"
-      x="0"
-      y="0"
-      width={width}
-      height={height}
-      strokeWidth="0"
-      fill="none"
-      {...props}
-    />
-  );
-
-  const CutZone = (
-    <CutArea
-      id="cut"
-      margin={cutMargin}
-      width={width}
-      height={height}
-      color={cutColor}
-      strokeDasharray={null}
-    />
-  );
-
-  const SafeZone = (
-    <CutArea
-      id="safe_zone"
-      margin={safeMargin}
-      width={width}
-      height={height}
-      color={safeColor}
-      strokeDasharray="3 3"
-    />
-  );
+    overflow: "hidden",
+    maxHeight: "100%",
+    maxWidth: "100%"
+  };
 
   return (
-    <g>
-      <defs>
-        <clipPath id="card">{CardBackground}</clipPath>
-        <clipPath id="cut">{CutZone}</clipPath>
-        <clipPath id="safe">{SafeZone}</clipPath>
-      </defs>
-
-      {CardBackground}
-
-      {process.env.PROOF && (cut && CutZone)}
-      {process.env.PROOF && (safeZone && SafeZone)}
-
-      {children}
-    </g>
+    <div style={style}>
+      <TrimLine
+        display={process.env.PROOF}
+        borderColor={cutColor}
+        margin={cutMargin}
+      >
+        <TrimLine
+          display={process.env.PROOF}
+          borderColor={safeColor}
+          margin={safeMargin}
+        >
+          <Column {...props}>{children}</Column>
+        </TrimLine>
+      </TrimLine>
+    </div>
   );
 };
 
