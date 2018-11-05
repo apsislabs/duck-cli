@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 
 const Document = ({ width, height, backgroundColor, children, ...props }) => (
   <html lang="en">
-    <meta charset="UTF-8" />
+    <meta charSet="UTF-8" />
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
     </head>
     <body style={{ backgroundColor }}>
       <div
