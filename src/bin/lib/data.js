@@ -42,13 +42,12 @@ const parseCsv = async (projectRoot, deckConfig, deckKey) => {
 };
 
 const explode = (config, data) => {
-  if (!config.explode || !_.has(data, config.explode)) {
+  if (!config.explode) {
     return data;
   }
 
   return _.flatMap(data, row => {
     const explosionCount = row[config.explode] || 1;
-
-    return Array.from({ length: explosionCount }).map(() => _.clone(row));
+    return _.times(explosionCount, () => _.clone(row));
   });
 };
