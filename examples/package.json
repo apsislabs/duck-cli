@@ -1,11 +1,12 @@
 {
   "scripts": {
     "build": "duck build",
+    "watch": "duck build --watch",
     "proof": "duck build --proof"
   },
   "private": "true",
   "devDependencies": {
-    "duck-cli": "^1.1.0"
+    "duck-cli": "^1.2.0"
   },
   "dependencies": {}
 }

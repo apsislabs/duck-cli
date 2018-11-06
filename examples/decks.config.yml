@@ -7,4 +7,4 @@ deck:
     trim_lines: true
     bleed: 37.5
   format:
-    - svg
+    - png
