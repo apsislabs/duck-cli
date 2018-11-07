@@ -4,7 +4,7 @@
     "watch": "duck build --watch",
     "proof": "duck build --proof"
   },
-  "private": "true",
+  "private": true,
   "devDependencies": {
     "duck-cli": "^1.3.1"
   },
