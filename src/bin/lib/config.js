@@ -69,16 +69,22 @@ const processDeckConfig = (deckConfig, deckKey) => {
     throw `Parameter 'height' is required in deck ${deckKey}`;
   }
 
-  deckConfig.format = normalizeFormat(deckConfig.format || "png");
-  deckConfig.data = deckConfig.data || `${deckKey}.csv`;
-  deckConfig.templateFront = deckConfig.templateFront || `${deckKey}.js`;
+  const defaults = {
+    data: `${deckKey}.csv`,
+    templateFront: `${deckKey}.js`,
+    format: ["png"]
+  };
 
-  return deckConfig;
+  // Fix potentially bad data
+  let conf = Object.assign(defaults, deckConfig);
+  conf.format = normalizeFormat(conf.format);
+  return conf;
 };
 
 const normalizeFormat = format => {
   if (Array.isArray(format)) {
     return format;
   }
+
   return [format];
 };
