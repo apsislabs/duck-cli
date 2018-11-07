@@ -22,9 +22,9 @@ export const Build = async args => {
   // Start
   const dir = resolve(args.path);
   if (args.watch) {
-    console.log(chalk.green(`🦆  Watching decks in ${basename(dir)}...`));
+    console.log(chalk.green(`🦆 Watching decks in ${basename(dir)}...`));
   } else {
-    console.log(chalk.green(`🦆  Building decks in ${basename(dir)}...`));
+    console.log(chalk.green(`🦆 Building decks in ${basename(dir)}...`));
   }
 
   // Check Dependencies
@@ -40,7 +40,7 @@ export const Build = async args => {
 
   // Build
   try {
-    await build(dir);
+    await build(dir, args);
   } catch (err) {
     console.error(err);
     process.exit(1);
