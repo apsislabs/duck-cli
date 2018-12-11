@@ -4,8 +4,9 @@ import path from "path";
 import PDFDocument from "pdfkit";
 import { progressBar } from "../utils/progressBar";
 import { insToPts, pxToPts } from "../utils/units";
+import { pdfname } from "../utils/filenames";
 
-export const formatPdf = async (pngBuffers, out, config) => {
+export const formatPdf = async (pngBuffers, out, config, deckKey = "") => {
   let {
     layout = "landscape",
     size = "letter",
@@ -14,6 +15,7 @@ export const formatPdf = async (pngBuffers, out, config) => {
   } = config.pdf;
   const docConfig = { layout, size };
   const doc = new PDFDocument(docConfig);
+  const filename = pdfname(config.filename, deckKey, out);
 
   // Get and crop images, if needed
   let cardWidthPx = config.width;
@@ -40,9 +42,8 @@ export const formatPdf = async (pngBuffers, out, config) => {
 
   // Do layout
   return new Promise((res, err) => {
-    const outPath = path.join(out, "out.pdf");
-    const pdfStream = fs.createWriteStream(outPath);
-    const pdfProgress = progressBar("PDF", pngBuffers.length);
+    const pdfStream = fs.createWriteStream(filename);
+    const pdfProgress = progressBar(`[${deckKey}] PDF`, pngBuffers.length);
 
     try {
       doc.pipe(pdfStream);

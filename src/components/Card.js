@@ -9,9 +9,11 @@ const BaseCard = ({
   children,
   cutColor = "red",
   cutMargin = ins(0.125),
+  cutRadius = ins(0.125),
   height,
   safeColor = "blue",
   safeMargin = ins(0.125),
+  safeRadius = ins(0.125),
   width,
   ...props
 }) => {
@@ -26,18 +28,27 @@ const BaseCard = ({
   return (
     <div style={style}>
       <TrimLine
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 999,
+          opacity: 0.45
+        }}
         display={process.env.PROOF}
         borderColor={cutColor}
+        radius={cutRadius}
         margin={cutMargin}
       >
         <TrimLine
           display={process.env.PROOF}
           borderColor={safeColor}
+          radius={safeRadius}
           margin={safeMargin}
-        >
-          <Column {...props}>{children}</Column>
-        </TrimLine>
+        />
       </TrimLine>
+
+      <div {...props}>{children}</div>
     </div>
   );
 };

@@ -9,6 +9,7 @@ export const TrimLine = ({
   display = false,
   margin = ins(0.125),
   radius = ins(0.125),
+  style,
   ...props
 }) => (
   <div
@@ -20,7 +21,8 @@ export const TrimLine = ({
       borderColor: display ? borderColor : "transparent",
       borderWidth: borderWidth,
       height: `calc(100% - ${margin * 2}px)`,
-      width: `calc(100% - ${margin * 2}px)`
+      width: `calc(100% - ${margin * 2}px)`,
+      ...style
     }}
     {...props}
   >
