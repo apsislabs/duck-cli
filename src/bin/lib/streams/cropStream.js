@@ -2,9 +2,9 @@ import Jimp from "jimp";
 import miss from "mississippi";
 import { progressBar } from "../utils/progressBar";
 
-export const cropStream = ({ config, size = 0 }) => {
+export const cropStream = ({ config, size = 0, deckKey = "" }) => {
   let pngBuffers = [];
-  const cropBar = progressBar("Crop", size);
+  const cropBar = progressBar(`[${deckKey}] Crop`, size);
   const {
     pdf: { bleed },
     width,

@@ -1,12 +1,11 @@
 import miss from "mississippi";
 import path from "path";
-import rimraf from "rimraf";
-import { nullStream } from "./streams/nullStream";
 import { cropStream } from "./streams/cropStream";
+import { nullStream } from "./streams/nullStream";
 import { pdfStream } from "./streams/pdfStream";
 import { pngStream } from "./streams/pngStream";
-const puppeteer = require("puppeteer");
 import fsp from "./utils/fsp";
+const puppeteer = require("puppeteer");
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
   for (const deckKey in config) {
@@ -25,7 +24,6 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
   const png = config.format.includes("png");
   const pdf = config.format.includes("pdf");
 
-  // const converter = pdf || png ? createConverter() : null;
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   const size = renderings.length;
@@ -46,15 +44,17 @@ const formatDeck = async (projectRoot, config, renderings, deckKey) => {
         pngStream({
           output,
           page,
-          size
+          size,
+          deckKey,
+          config
         })
       );
     }
 
     if (pdf) {
       renderingStream = renderingStream
-        .pipe(cropStream({ config, size }))
-        .pipe(pdfStream({ output, config }));
+        .pipe(cropStream({ config, size, deckKey }))
+        .pipe(pdfStream({ output, config, deckKey }));
     }
 
     renderingStream
