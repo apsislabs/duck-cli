@@ -15,6 +15,7 @@ export const pngStream = ({ output, page, config, size = 0, deckKey = "" }) => {
       .then(pngBar.tick());
 
     pngIndex++;
+
     cb(null, pngBuffer);
   });
 };

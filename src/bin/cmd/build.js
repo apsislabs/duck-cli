@@ -29,6 +29,7 @@ const doBuild = async (dir, args) => {
 export const Build = async args => {
   if (args.help) {
     logBuildHelp();
+    process.exit(0);
   }
 
   // Start
@@ -68,13 +69,13 @@ export const Build = async args => {
       );
 
       // Handle new and modified files
-      watcher.on("add", () => doBuild(dir, args));
-      watcher.on("change", () => doBuild(dir, args));
+      watcher.on("add", async () => await doBuild(dir, args));
+      watcher.on("change", async () => await doBuild(dir, args));
 
       // Handle removing files
-      watcher.on("unlink", p => {
+      watcher.on("unlink", async p => {
         watcher.unwatch(p);
-        doBuild(dir, args);
+        await doBuild(dir, args);
       });
 
       // Handle errors
@@ -86,5 +87,5 @@ export const Build = async args => {
   }
 
   // Done
-  printAndExit(chalk.green("✨ Build complete!"));
+  process.exit(0);
 };

@@ -71,7 +71,7 @@ const processDeckConfig = (deckConfig, deckKey) => {
 
   const defaults = {
     data: `${deckKey}.csv`,
-    templateFront: `${deckKey}.js`,
+    template: `${deckKey}.js`,
     format: ["png"],
     filename: "${deck}_${cardIndex}"
   };

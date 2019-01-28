@@ -1,4 +1,6 @@
 deck:
+  # template: deck.js
+  # filename: "deck_${cardIndex}"
   # explode: qty
   width: 825
   height: 1125

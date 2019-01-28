@@ -18,10 +18,14 @@ export const renderTemplates = async (projectRoot, config, data) => {
   await transpileTemplates(templatesPath, tmpPath);
 
   for (const deckKey in config) {
+    let deckConfig = config[deckKey];
+    let deckData = data[deckKey];
+
     renderings[deckKey] = await renderTemplate(
       tmpPath,
-      config[deckKey],
-      data[deckKey]
+      deckConfig.template,
+      deckConfig,
+      deckData
     );
   }
 
@@ -47,13 +51,13 @@ const loadTemplate = filePath => {
   return require(filePath).default;
 };
 
-const renderTemplate = async (templatesPath, config, data) => {
+const renderTemplate = async (templatesPath, templateName, config, data) => {
   const documentPath = join(templatesPath, "__document");
-  const templatePath = join(templatesPath, config.templateFront);
-  const customDocument = await fsp.exists(documentPath);
+  const templatePath = join(templatesPath, templateName);
+  const useCustomDocument = await fsp.exists(documentPath);
 
   const Card = loadTemplate(resolve(templatePath));
-  const Document = customDocument
+  const Document = useCustomDocument
     ? loadTemplate(resolve(documentPath))
     : loadTemplate("../../components/__document");
 
