@@ -31,7 +31,7 @@ const argv = parseArgs(process.argv.slice(2), {
     D: "decks",
     f: "formats"
   },
-  string: ["deck", "format"],
+  string: ["decks", "formats"],
   boolean: ["h", "P", "w", "v"],
   string: ["p"],
   default: { path: "./", proof: false, watch: false, verbose: false }

@@ -9,10 +9,22 @@ import { logBuildHelp } from "./helps";
 import { clearCache } from "../lib/utils/require";
 import {
   REQUIRED_SUBDIRS,
-  TMP_FOLDER,
+  TMP_REGEX,
   TEMPLATE_FOLDER,
   DATA_FOLDER
 } from "../lib/constants";
+
+const doBuild = async (dir, args) => {
+  // Build
+  try {
+    await build(dir, args);
+  } catch (err) {
+    console.error(chalk.red(err));
+    process.exit(1);
+  }
+
+  console.log(chalk.green("✨ Build complete!"));
+};
 
 export const Build = async args => {
   if (args.help) {
@@ -21,11 +33,9 @@ export const Build = async args => {
 
   // Start
   const dir = resolve(args.path);
-  if (args.watch) {
-    console.log(chalk.green(`🦆 Watching decks in ${basename(dir)}...`));
-  } else {
-    console.log(chalk.green(`🦆 Building decks in ${basename(dir)}...`));
-  }
+  const verb = args.watch ? "Watching" : "Building";
+
+  console.log(chalk.green(`🦆 ${verb} decks in ${basename(dir)}...`));
 
   // Check Dependencies
   if (!existsSync(dir)) {
@@ -38,14 +48,10 @@ export const Build = async args => {
     }
   });
 
-  // Build
-  try {
-    await build(dir, args);
-  } catch (err) {
-    console.error(err);
-    process.exit(1);
-  }
+  // Do initial build
+  doBuild(dir, args);
 
+  // Setup watcher
   if (args.watch) {
     await new Promise((res, rej) => {
       const watcher = chokidar.watch(
@@ -53,44 +59,28 @@ export const Build = async args => {
         {
           ignored: ["node_modules", /(^|[\/\\])\../],
           ignoreInitial: true,
-          persistent: true
+          persistent: true,
+          awaitWriteFinish: {
+            stabilityThreshold: 50,
+            pollInterval: 10
+          }
         }
       );
 
-      // Add event listeners.
-      const rebuild = async p => {
-        // TODO: This is a weird constant
-        const pathRegex = new RegExp(`${resolve(`./${TMP_FOLDER}`)}.*`);
-        clearCache(pathRegex);
-        console.log(chalk.green(`\n🛠  Rebuilding ${basename(dir)}`));
-        await build(dir);
-      };
-
       // Handle new and modified files
-      watcher.on("add", rebuild);
-      watcher.on("change", rebuild);
+      watcher.on("add", () => doBuild(dir, args));
+      watcher.on("change", () => doBuild(dir, args));
 
       // Handle removing files
       watcher.on("unlink", p => {
         watcher.unwatch(p);
-        rebuild(p);
+        doBuild(dir, args);
       });
 
       // Handle errors
       watcher.on("error", error => {
         console.log(chalk.red(error));
         rej(error);
-      });
-
-      // Handle interrupts
-      process.on("SIGINT", () => {
-        watcher.close();
-        res();
-      });
-
-      process.on("SIGTERM", () => {
-        watcher.close();
-        res();
       });
     });
   }
