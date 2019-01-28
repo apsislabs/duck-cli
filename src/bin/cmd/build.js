@@ -49,7 +49,7 @@ export const Build = async args => {
   });
 
   // Do initial build
-  doBuild(dir, args);
+  await doBuild(dir, args);
 
   // Setup watcher
   if (args.watch) {

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import path from "path";
+import { join, resolve } from "path";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import rimraf from "rimraf";
@@ -7,12 +7,13 @@ import { DeckProvider } from "../../components/DeckContext";
 import { TEMPLATE_FOLDER, TMP_FOLDER } from "./constants";
 import fsp from "./utils/fsp";
 import { transformDir } from "./utils/transform";
+import { verboseLog } from "./utils/logger";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
 
-  const templatesPath = path.join(projectRoot, TEMPLATE_FOLDER);
-  const tmpPath = path.join(projectRoot, TMP_FOLDER);
+  const templatesPath = join(projectRoot, TEMPLATE_FOLDER);
+  const tmpPath = join(projectRoot, TMP_FOLDER);
 
   await transpileTemplates(templatesPath, tmpPath);
 
@@ -34,8 +35,10 @@ const transpileTemplates = async (projectRoot, tmpPath) => {
   };
 
   try {
-    babel = await fsp.readJson(path.join(projectRoot, ".babelrc"));
-  } catch (e) {}
+    babel = await fsp.readJson(join(projectRoot, ".babelrc"));
+  } catch (e) {
+    verboseLog(`... Error loading .babelrc: ${e}`);
+  }
 
   await transformDir(projectRoot, tmpPath, { babel });
 };
@@ -45,18 +48,20 @@ const loadTemplate = filePath => {
 };
 
 const renderTemplate = async (templatesPath, config, data) => {
-  const templatePath = path.resolve(
-    path.join(templatesPath, config.templateFront)
-  );
+  const documentPath = join(templatesPath, "__document");
+  const templatePath = join(templatesPath, config.templateFront);
+  const customDocument = await fsp.exists(documentPath);
 
-  const Card = loadTemplate(templatePath);
-  const Document = loadTemplate("../../components/__document");
+  const Card = loadTemplate(resolve(templatePath));
+  const Document = customDocument
+    ? loadTemplate(resolve(documentPath))
+    : loadTemplate("../../components/__document");
 
   const renderings = _.map(data, (row, i) => {
-    const { width, height, backgroundColor } = config;
+    const { width, height } = config;
 
     const dom = (
-      <Document width={width} height={height} backgroundColor={backgroundColor}>
+      <Document width={width} height={height}>
         <DeckProvider value={config}>
           <Card {...row} config={config} deck={data} cardIndex={i} />
         </DeckProvider>

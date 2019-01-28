@@ -12,15 +12,16 @@ html {
 }
 `;
 
-const Document = ({ width, height, backgroundColor, children, ...props }) => (
+const Document = ({ width, height, globalCss, children, ...props }) => (
   <html lang="en">
     <meta charSet="UTF-8" />
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
       <style>{reset}</style>
+      <style>{globalCss}</style>
     </head>
-    <body style={{ width, height, backgroundColor }}>
+    <body style={{ width, height }}>
       <div
         className="wrapper"
         style={{
@@ -38,7 +39,7 @@ const Document = ({ width, height, backgroundColor, children, ...props }) => (
 Document.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  backgroundColor: PropTypes.string
+  globalCss: PropTypes.string
 };
 
 export default Document;
