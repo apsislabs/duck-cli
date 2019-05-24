@@ -14,7 +14,11 @@ import {
   DATA_FOLDER
 } from "../lib/constants";
 
-const doBuild = async (dir, args) => {
+const doBuild = async (dir, args, uncache = false) => {
+  if (uncache) {
+    clearCache(TMP_REGEX);
+  }
+
   // Build
   try {
     await build(dir, args);
@@ -69,13 +73,13 @@ export const Build = async args => {
       );
 
       // Handle new and modified files
-      watcher.on("add", async () => await doBuild(dir, args));
-      watcher.on("change", async () => await doBuild(dir, args));
+      watcher.on("add", async () => await doBuild(dir, args, true));
+      watcher.on("change", async () => await doBuild(dir, args, true));
 
       // Handle removing files
       watcher.on("unlink", async p => {
         watcher.unwatch(p);
-        await doBuild(dir, args);
+        await doBuild(dir, args, true);
       });
 
       // Handle errors
