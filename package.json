@@ -18,34 +18,34 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.5",
-    "@babel/plugin-transform-regenerator": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-react": "^7.0.0",
-    "ascii-progress": "^1.0.5",
-    "babel-polyfill": "^6.26.0",
-    "chalk": "^2.4.2",
-    "chokidar": "^3.0.0",
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-transform-regenerator": "^7.7.5",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-react": "^7.7.4",
+    "chalk": "^3.0.0",
+    "chokidar": "^3.3.1",
     "datauri": "^2.0.0",
-    "globby": "^9.2.0",
-    "inquirer": "^6.3.1",
-    "jimp": "^0.6.4",
+    "globby": "^10.0.1",
+    "inquirer": "^7.0.1",
+    "jimp": "^0.9.3",
     "js-yaml": "^3.13.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "minimist": "^1.2.0",
     "mississippi": "^4.0.0",
     "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
-    "papaparse": "^4.6.3",
-    "pdfkit": "^0.9.1",
+    "ora": "^4.0.3",
+    "papaparse": "^5.1.0",
+    "pdfkit": "^0.11.0",
     "prop-types": "^15.7.2",
-    "puppeteer": "^1.17.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "puppeteer": "^2.0.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.7",
-    "rimraf": "^2.6.3"
+    "request-promise-native": "^1.0.8",
+    "rimraf": "^3.0.0"
   },
   "husky": {
     "hooks": {
@@ -53,8 +53,8 @@
     }
   },
   "devDependencies": {
-    "husky": "^2.3.0",
-    "prettier": "^1.17.1",
-    "pretty-quick": "^1.11.0"
+    "husky": "^3.1.0",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1"
   }
 }

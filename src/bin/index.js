@@ -1,11 +1,10 @@
-import "babel-polyfill";
+import "@babel/polyfill";
 import chalk from "chalk";
 import _ from "lodash";
 import parseArgs from "minimist";
 import { Build } from "./cmd/build.js";
-import { printAndExit } from "./lib/utils/logger";
-import { Init } from "./cmd/init.js";
 import { logDefaultHelp } from "./cmd/helps.js";
+import { Init } from "./cmd/init.js";
 
 process.on("SIGINT", () => {
   process.exit(0);
@@ -62,9 +61,11 @@ if (!cmd) {
 } else if (cmd && _.has(commands, cmd)) {
   const promise = commands[cmd](argv);
   if (promise) {
-    promise.then(() => process.exit(0)).catch(e => {
-      console.error(chalk.red(e.stack));
-    });
+    promise
+      .then(() => process.exit(0))
+      .catch(e => {
+        console.error(chalk.red(e.stack));
+      });
   }
 } else {
   console.warn(chalk.yellow(`Warning: Unknown Command: ${cmd}`));

@@ -1,10 +1,8 @@
 import fs from "fs";
 import _ from "lodash";
-import path from "path";
 import PDFDocument from "pdfkit";
-import { progressBar } from "../utils/progressBar";
-import { insToPts, pxToPts } from "../utils/units";
 import { pdfname } from "../utils/filenames";
+import { insToPts, pxToPts } from "../utils/units";
 
 export const formatPdf = async (pngBuffers, out, config, deckKey = "") => {
   let {
@@ -43,12 +41,9 @@ export const formatPdf = async (pngBuffers, out, config, deckKey = "") => {
   // Do layout
   return new Promise((res, err) => {
     const pdfStream = fs.createWriteStream(filename);
-    const pdfProgress = progressBar(`[${deckKey}] PDF`, pngBuffers.length);
 
     try {
       doc.pipe(pdfStream);
-
-      let cardNum = 1;
 
       // Iterate Pages
       _.forEach(pages, (rows, i) => {
@@ -74,8 +69,6 @@ export const formatPdf = async (pngBuffers, out, config, deckKey = "") => {
               width: cardWidthPts,
               height: cardHeightPts
             });
-
-            pdfProgress.tick();
 
             // Last Card in Row
             if (k + 1 === row.length) {
