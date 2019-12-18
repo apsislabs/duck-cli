@@ -23,11 +23,13 @@ const doBuild = async (dir, args, uncache = false) => {
   try {
     await build(dir, args);
   } catch (err) {
-    console.error(chalk.red(err));
-    process.exit(1);
+    console.error(chalk.red("⚠️ Error while building:\n"));
+    console.error(err.stack);
+    return false;
   }
 
-  console.log(chalk.green("✨ Build complete!"));
+  console.log(chalk.green("✨ Build complete!\n"));
+  return true;
 };
 
 export const Build = async args => {
@@ -40,7 +42,7 @@ export const Build = async args => {
   const dir = resolve(args.path);
   const verb = args.watch ? "Watching" : "Building";
 
-  console.log(chalk.green(`🦆 ${verb} decks in ${basename(dir)}...`));
+  console.log(chalk.blue(`🦆 ${verb} decks in ${basename(dir)}...\n`));
 
   // Check Dependencies
   if (!existsSync(dir)) {
