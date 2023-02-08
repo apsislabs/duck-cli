@@ -1,11 +1,13 @@
-import miss from "mississippi";
 import path from "path";
-import { cropStream } from "./streams/cropStream";
-import { nullStream } from "./streams/nullStream";
-import { pdfStream } from "./streams/pdfStream";
-import { pngStream } from "./streams/pngStream";
-import fsp from "./utils/fsp";
-const puppeteer = require("puppeteer");
+import miss from "mississippi";
+import puppeteer from "puppeteer";
+
+import { cropStream } from "./streams/cropStream.js";
+import { nullStream } from "./streams/nullStream.js";
+import { pdfStream } from "./streams/pdfStream.js";
+import { pngStream } from "./streams/pngStream.js";
+
+import fsp from "./utils/fsp.js";
 
 export const formatCards = async (projectRoot, config, data, renderings) => {
   for (const deckKey in config) {

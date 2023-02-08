@@ -1,8 +1,8 @@
-import { readConfig } from "./config";
-import { readData } from "./data";
-import { renderTemplates } from "./template";
-import { formatCards } from "./format";
-import { verboseLog } from "./utils/logger";
+import { readConfig } from "./config.js";
+import { readData } from "./data.js";
+import { renderTemplates } from "./template.js";
+import { formatCards } from "./format.js";
+import { verboseLog } from "./utils/logger.js";
 
 export const build = async (projectRoot, confOverride) => {
   verboseLog(`...Building deck for ${projectRoot}`);

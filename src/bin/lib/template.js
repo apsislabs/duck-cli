@@ -1,19 +1,20 @@
 import _ from "lodash";
 import { join, resolve } from "path";
 import React from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+import * as ReactDOMServer from 'react-dom/server';
 import rimraf from "rimraf";
-import { DeckProvider } from "../../components/DeckContext";
-import { TEMPLATE_FOLDER, TMP_FOLDER } from "./constants";
-import fsp from "./utils/fsp";
-import { transformDir } from "./utils/transform";
-import { verboseLog } from "./utils/logger";
+import { DeckProvider } from "../../components/DeckContext.js";
+import { TEMPLATE_FOLDER, TMP_FOLDER } from "./constants.js";
+import fsp from "./utils/fsp.js";
+import { verboseLog } from "./utils/logger.js";
+import { transformDir } from "./utils/transform.js";
 
 export const renderTemplates = async (projectRoot, config, data) => {
   const renderings = {};
 
   const templatesPath = join(projectRoot, TEMPLATE_FOLDER);
   const tmpPath = join(projectRoot, TMP_FOLDER);
+
 
   await transpileTemplates(templatesPath, tmpPath);
 
@@ -34,32 +35,28 @@ export const renderTemplates = async (projectRoot, config, data) => {
 };
 
 const transpileTemplates = async (projectRoot, tmpPath) => {
-  let babel = {
-    presets: ["@babel/preset-env", "@babel/preset-react"]
-  };
+  let config = {};
 
   try {
-    babel = await fsp.readJson(join(projectRoot, ".babelrc"));
+    config = await fsp.readJson(join(projectRoot, ".swcrc"));
   } catch (e) {
-    verboseLog(`... Error loading .babelrc: ${e}`);
+    verboseLog(`... Error loading .swcrc: ${e}`);
   }
 
-  await transformDir(projectRoot, tmpPath, { babel });
+  await transformDir(projectRoot, tmpPath, { config });
 };
 
-const loadTemplate = filePath => {
-  return require(filePath).default;
-};
+const loadTemplate = filePath => import(filePath);
 
 const renderTemplate = async (templatesPath, templateName, config, data) => {
-  const documentPath = join(templatesPath, "__document");
+  const documentPath = join(templatesPath, "__document.js");
   const templatePath = join(templatesPath, templateName);
   const useCustomDocument = await fsp.exists(documentPath);
 
-  const Card = loadTemplate(resolve(templatePath));
+  const Card = (await loadTemplate(resolve(templatePath))).default;
   const Document = useCustomDocument
-    ? loadTemplate(resolve(documentPath))
-    : loadTemplate("../../components/__document");
+    ? (await loadTemplate(resolve(documentPath))).default
+    : (await loadTemplate("../../components/__document.js")).default;
 
   const renderings = _.map(data, (row, i) => {
     const { width, height } = config;
@@ -72,9 +69,11 @@ const renderTemplate = async (templatesPath, templateName, config, data) => {
       </Document>
     );
 
-    const html = renderToStaticMarkup(dom);
+    const html = ReactDOMServer.renderToStaticMarkup(dom);
+
     return { html, width, height };
   });
+
 
   return renderings;
 };

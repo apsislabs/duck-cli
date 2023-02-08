@@ -1,18 +1,18 @@
-import chalk from "chalk";
+import pc from "picocolors";
 import _ from "lodash";
 import chokidar from "chokidar";
 import { existsSync } from "fs";
 import { join, resolve, basename } from "path";
-import { build } from "../lib/build";
-import { printAndExit } from "../lib/utils/logger";
-import { logBuildHelp } from "./helps";
-import { clearCache } from "../lib/utils/require";
+import { build } from "../lib/build.js";
+import { printAndExit } from "../lib/utils/logger.js";
+import { logBuildHelp } from "./helps.js";
+import { clearCache } from "../lib/utils/require.js";
 import {
   REQUIRED_SUBDIRS,
   TMP_REGEX,
   TEMPLATE_FOLDER,
   DATA_FOLDER
-} from "../lib/constants";
+} from "../lib/constants.js";
 
 const doBuild = async (dir, args, uncache = false) => {
   if (uncache) {
@@ -23,12 +23,12 @@ const doBuild = async (dir, args, uncache = false) => {
   try {
     await build(dir, args);
   } catch (err) {
-    console.error(chalk.red("⚠️ Error while building:\n"));
+    console.log(pc.red("⚠️ Error while building:\n"));
     console.error(err.stack);
     return false;
   }
 
-  console.log(chalk.green("✨ Build complete!\n"));
+  console.log(pc.green("✨ Build complete!\n"));
   return true;
 };
 
@@ -42,16 +42,16 @@ export const Build = async args => {
   const dir = resolve(args.path);
   const verb = args.watch ? "Watching" : "Building";
 
-  console.log(chalk.blue(`🦆 ${verb} decks in ${basename(dir)}...\n`));
+  console.log(pc.blue(`🦆 ${verb} decks in ${basename(dir)}...\n`));
 
   // Check Dependencies
   if (!existsSync(dir)) {
-    printAndExit(chalk.red(`No such directory ${basename(dir)}.`));
+    printAndExit(pc.red(`No such directory ${basename(dir)}.`));
   }
 
   REQUIRED_SUBDIRS.forEach(subdir => {
     if (!existsSync(join(dir, subdir))) {
-      printAndExit(chalk.red(`Couldn\'t find ${subdir}. Exiting.`));
+      printAndExit(pc.red(`Couldn\'t find ${subdir}. Exiting.`));
     }
   });
 
@@ -86,7 +86,7 @@ export const Build = async args => {
 
       // Handle errors
       watcher.on("error", error => {
-        console.log(chalk.red(error));
+        console.log(pc.red(error));
         rej(error);
       });
     });

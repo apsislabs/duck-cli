@@ -1,5 +1,4 @@
-import "@babel/polyfill";
-import chalk from "chalk";
+import pc from "picocolors";
 import _ from "lodash";
 import parseArgs from "minimist";
 import { Build } from "./cmd/build.js";
@@ -56,7 +55,7 @@ if (!cmd) {
   if (promise) {
     promise
       .then(() => process.exit(0))
-      .catch(e => console.error(chalk.red(e.stack)));
+      .catch(e => console.error(pc.red(e.stack)));
   }
 } else if (cmd && _.has(commands, cmd)) {
   const promise = commands[cmd](argv);
@@ -64,10 +63,10 @@ if (!cmd) {
     promise
       .then(() => process.exit(0))
       .catch(e => {
-        console.error(chalk.red(e.stack));
+        console.error(pc.red(e.stack));
       });
   }
 } else {
-  console.warn(chalk.yellow(`Warning: Unknown Command: ${cmd}`));
+  console.warn(pc.yellow(`Warning: Unknown Command: ${cmd}`));
   logDefaultHelp(availableCmds);
 }

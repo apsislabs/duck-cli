@@ -1,4 +1,4 @@
-deck:
+example:
   # template: deck.js
   # filename: "deck_${cardIndex}"
   # explode: qty

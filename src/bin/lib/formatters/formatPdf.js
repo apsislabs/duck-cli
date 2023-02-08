@@ -1,8 +1,8 @@
 import fs from "fs";
 import _ from "lodash";
 import PDFDocument from "pdfkit";
-import { pdfname } from "../utils/filenames";
-import { insToPts, pxToPts } from "../utils/units";
+import { pdfname } from "../utils/filenames.js";
+import { insToPts, pxToPts } from "../utils/units.js";
 
 export const formatPdf = async (pngBuffers, out, config, deckKey = "") => {
   let {

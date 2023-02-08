@@ -1,6 +1,6 @@
 import React from "react";
-import { Overlay } from "./Overlay";
-import { asset } from "../lib/assetPath";
+import { Overlay } from "./Overlay.js";
+import { asset } from "../lib/assetPath.js";
 
 export const Proof = ({ children }) => (
   <React.Fragment>{process.env.PROOF ? children : null}</React.Fragment>

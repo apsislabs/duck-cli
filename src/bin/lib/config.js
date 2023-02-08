@@ -1,9 +1,9 @@
-import fsp from "./utils/fsp";
-import path from "path";
 import yaml from "js-yaml";
 import _ from "lodash";
-import { verboseLog } from "./utils/logger";
-import { CONF_FILE } from "./constants";
+import path from "path";
+import { CONF_FILE } from "./constants.js";
+import fsp from "./utils/fsp.js";
+import { verboseLog } from "./utils/logger.js";
 
 export const readConfig = async (projectRoot, confOverride) => {
   const configFile = path.join(projectRoot, CONF_FILE);
@@ -11,7 +11,7 @@ export const readConfig = async (projectRoot, confOverride) => {
   verboseLog(`...Looking for config in file ${configFile}`);
 
   try {
-    let conf = yaml.safeLoad(await fsp.readFile(configFile, "utf8"));
+    let conf = yaml.load(await fsp.readFile(configFile, "utf8"));
 
     // Filter to keys if passed by CLI
     if (confOverride.decks) {

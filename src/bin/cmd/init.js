@@ -1,16 +1,15 @@
-import chalk from "chalk";
-import path from "path";
-import rimraf from "rimraf";
-import { ncp } from "ncp";
 import fs, { existsSync } from "fs";
 import inquirer from "inquirer";
 import { safeDump } from "js-yaml";
-import { logInitHelp } from "./helps";
-import { printAndExit } from "../lib/utils/logger";
+import path from "path";
+import pc from "picocolors";
+import rimraf from "rimraf";
 import { promisify } from "util";
-import { CONF_FILE, TEMPLATE_FOLDER } from "../lib/constants";
+import { CONF_FILE, TEMPLATE_FOLDER } from "../lib/constants.js";
+import { printAndExit } from "../lib/utils/logger.js";
+import { logInitHelp } from "./helps.js";
 
-const pncp = promisify(ncp);
+const ncp = import('ncp').ncp;
 
 const askQuestions = () => {
   const questions = [
@@ -91,16 +90,16 @@ export const Init = async args => {
 
   const examplePath = path.join(__dirname, "..", "..", "..", "examples");
   const destDir = path.resolve(args.path);
-  console.log(chalk.green(`Creating new deck in ${destDir}`));
+  console.log(pc.green(`Creating new deck in ${destDir}`));
 
   if (!dirEmpty(destDir)) {
-    printAndExit(chalk.red(`There's already a file at ${destDir}.`));
+    printAndExit(pc.red(`There's already a file at ${destDir}.`));
   }
 
   const answers = await askQuestions();
 
   try {
-    await pncp(examplePath, destDir);
+    await ncp(examplePath, destDir);
   } catch (err) {
     printAndExit(err);
   }

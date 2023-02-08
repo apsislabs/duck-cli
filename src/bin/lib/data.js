@@ -2,8 +2,8 @@ import _ from "lodash";
 import Papa from "papaparse";
 import path from "path";
 import request from "request-promise-native";
-import { DATA_FOLDER } from "./constants";
-import fsp from "./utils/fsp";
+import { DATA_FOLDER } from "./constants.js";
+import fsp from "./utils/fsp.js";
 
 function isUrl(s) {
   var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;

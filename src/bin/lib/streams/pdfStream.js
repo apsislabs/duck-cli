@@ -1,10 +1,9 @@
-import miss from "mississippi";
-import { formatPdf } from "../formatters/formatPdf";
 import ora from "ora";
-import chalk from "chalk";
+import pc from "picocolors";
+import { formatPdf } from "../formatters/formatPdf.js";
 
 export const pdfStream = ({ output, config, deckKey = "" }) => {
-  const spinner = ora(`[${chalk.cyan(deckKey)}]\tFormatting PDF`).start();
+  const spinner = ora(`[${pc.cyan(deckKey)}]\tFormatting PDF`).start();
 
   return miss.through.obj(
     async (c, e, cb) => {

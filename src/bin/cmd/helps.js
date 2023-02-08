@@ -1,4 +1,4 @@
-import { printAndExit } from "../lib/utils/logger";
+import { printAndExit } from "../lib/utils/logger.js";
 
 export const logDefaultHelp = cmds => {
   printAndExit(`

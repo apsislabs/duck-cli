@@ -1,13 +1,13 @@
-import miss from "mississippi";
-import { formatPng } from "../formatters/formatPng";
-import { pngname } from "../utils/filenames";
-import fsp from "../utils/fsp";
 import ora from "ora";
-import chalk from "chalk";
+import miss from "mississippi";
+import pc from "picocolors";
+import { formatPng } from "../formatters/formatPng.js";
+import { pngname } from "../utils/filenames.js";
+import fsp from "../utils/fsp.js";
 
 export const pngStream = ({ output, page, config, size = 0, deckKey = "" }) => {
   let pngIndex = 0;
-  const spinner = ora(`[${chalk.cyan(deckKey)}]\tBuffering PNGs`).start();
+  const spinner = ora(`[${pc.cyan(deckKey)}]\tBuffering PNGs`).start();
 
   return miss.through.obj(
     async (chunk, _enc, cb) => {

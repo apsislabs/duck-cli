@@ -1,10 +1,10 @@
 import Jimp from "jimp";
 import miss from "mississippi";
 import ora from "ora";
-import chalk from "chalk";
+import pc from "picocolors";
 
 export const cropStream = ({ config, size = 0, deckKey = "" }) => {
-  const spinner = ora(`[${chalk.cyan(deckKey)}]\tCropping PNGs`).start();
+  const spinner = ora(`[${pc.cyan(deckKey)}]\tCropping PNGs`).start();
 
   let pngBuffers = [];
 

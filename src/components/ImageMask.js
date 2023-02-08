@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { asset } from "../lib/assetPath";
+import { asset } from "../lib/assetPath.js";
 
 export const ImageMask = ({ color, src, styles, ...props }) => {
   const maskStyles = {

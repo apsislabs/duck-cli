@@ -1,7 +1,7 @@
-import { sync as DataURI } from "datauri";
-import { resolve, join } from "path";
-import { ASSET_FOLDER } from "../bin/lib/constants";
+const Datauri = import('datauri/sync');
 import fs from "fs";
+import { join, resolve } from "path";
+import { ASSET_FOLDER } from "../bin/lib/constants.js";
 
 export const assetPath = p => {
   return resolve(join(ASSET_FOLDER, p)).toString();
@@ -12,5 +12,5 @@ export const assetBuffer = p => {
 };
 
 export const asset = p => {
-  return DataURI(assetPath(p));
+  return Datauri(assetPath(p));
 };
