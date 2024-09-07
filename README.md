@@ -21,5 +21,10 @@
 
     * duck/create-duck-game: the project scaffolder
 
+## TODO
 
-* TODO: Support JSX
+* Move templates to create dir
+* Fix print-n-play PDF generation
+* Add support for stylesheet per deck
+* Split CLI and core
+* Switch from yaml config to json config with $schema
