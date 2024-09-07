@@ -7,38 +7,32 @@
     "build": "rollup --config rollup.config.js",
     "dev": "rollup -w --config rollup.config.js",
     "duck": "node ./dist/main.js",
-    "prewatch": "npm run clean",
+    "predev": "npm run clean",
     "prebuild": "npm run clean",
     "preversion": "npm run build"
   },
   "type": "module",
   "bin": {
-    "duck": "./cli.js"
+    "duck": "./bin/duck.js"
   },
   "author": "Apsis Labs",
   "license": "MIT",
   "dependencies": {
-    "@resvg/resvg-js": "^2.6.2",
     "@swc/core": "^1.7.23",
     "csv-parse": "^5.5.6",
     "datauri": "^4.1.0",
     "globby": "^14.0.2",
     "handlebars": "^4.7.8",
-    "html-to-react": "^1.7.0",
     "js-yaml": "^4.1.0",
-    "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "marked": "^14.1.0",
     "minimist": "^1.2.8",
-    "node-system-fonts": "^1.0.1",
     "puppeteer": "^23.3.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "satori": "^0.10.14"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "@swc/cli": "^0.4.0",
     "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.7",
     "@types/lodash-es": "^4.17.12",
