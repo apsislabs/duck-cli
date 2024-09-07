@@ -9,6 +9,8 @@
     "duck-cli": "1.5.2"
   },
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "react": "^16.14.0"
+  },
   "version": "0.0.1"
 }

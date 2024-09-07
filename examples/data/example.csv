@@ -1,2 +1,2 @@
-name,data
-test,tes
+name,$image,_body,qty
+Warlord,warlord-helmet.png,**This**: supports _markdown_,100

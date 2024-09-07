@@ -1,5 +1,6 @@
 dist/
 node_modules/
+**/node_modules/
 .DS_Store
 
 test/*
@@ -9,3 +10,4 @@ examples/package-lock.json
 examples/output
 examples/tmp
 .vscode
+.duck
