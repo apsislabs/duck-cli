@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "build": "duck build",
+    "watch": "duck build --watch",
+    "proof": "duck build --proof"
+  },
+  "private": true,
+  "devDependencies": {
+    "duck-cli": "1.5.2"
+  },
+  "type": "module",
+  "dependencies": {
+    "react": "^16.14.0"
+  },
+  "version": "0.0.1"
+}

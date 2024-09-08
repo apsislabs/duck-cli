@@ -5,11 +5,11 @@ import { join } from "path";
 import {
   DATA_DIR_NAME,
   IMAGE_COLUMN_PREFIX,
-  MD_COLUMN_PREFIX,
-} from "../main.js";
+  MD_COLUMN_PREFIX
+} from "../constants.js";
 import { CardData, DeckConfig, DeckName } from "../types.js";
 import { marked } from "marked";
-import { loadAsset } from "./utils.js";
+import { loadAsset } from "../utils/fs.js";
 
 export const loadData = (
   root: string,

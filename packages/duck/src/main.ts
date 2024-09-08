@@ -4,22 +4,13 @@ import minimist from "minimist";
 import { extname, join, resolve } from "path";
 import { BuildCmdArgs, CardData, DeckName } from "./types.js";
 
-import { globby } from "globby";
+import { globby, globbySync } from "globby";
 import { flatMap } from "lodash-es";
-import { loadConfig } from "./bin/config.js";
-import { loadData } from "./bin/data.js";
-import { renderHtml, renderJsx } from "./bin/render.js";
-import { mkdirp } from "./bin/utils.js";
-
-export const DEFAULT_PATH = "./";
-
-export const IMAGE_COLUMN_PREFIX = "$";
-export const MD_COLUMN_PREFIX = "_";
-
-export const ASSET_DIR_NAME = "assets";
-export const DATA_DIR_NAME = "data";
-export const OUT_DIR_NAME = "output";
-export const TPL_DIR_NAME = "templates";
+import { loadConfig } from "./lib/config.js";
+import { loadData } from "./lib/data.js";
+import { renderHtml, renderJsx } from "./lib/render.js";
+import { mkdirp } from "./utils/fs.js";
+import { DEFAULT_PATH, OUT_DIR_NAME, TPL_DIR_NAME } from "./constants.js";
 
 const getArgs = (): BuildCmdArgs => {
   const raw = minimist(process.argv);
@@ -46,8 +37,10 @@ const main = async () => {
   const decks = Object.entries(data) as [DeckName, CardData[]][];
   let renders: Record<DeckName, Uint8Array[]> = {};
   for (const [deck, data] of decks) {
-    const { template, path } = await loadTemplate(root, deck);
+    const { template, path } = loadTemplate(root, deck);
+    const styles = loadStyles(root, deck);
     const tplType = extname(path);
+
     console.log(`Rendering ${deck} from ${path}...`);
 
     if (tplType === ".jsx" || tplType === ".tsx") {
@@ -56,10 +49,17 @@ const main = async () => {
         data,
         deck,
         cachedir,
-        config[deck]
+        config[deck],
+        styles
       );
     } else {
-      renders[deck] = await renderHtml(template, data, deck, config[deck]);
+      renders[deck] = await renderHtml(
+        template,
+        data,
+        deck,
+        config[deck],
+        styles
+      );
     }
   }
 
@@ -77,10 +77,19 @@ const main = async () => {
   console.timeEnd("save");
 };
 
-const loadTemplate = async (root: string, deck: DeckName) => {
-  const paths = await globby(join(root, TPL_DIR_NAME, tplPath(deck)));
+const loadTemplate = (root: string, deck: DeckName) => {
+  const paths = globbySync(join(root, TPL_DIR_NAME, tplPath(deck)));
   const path = paths[0];
   return { path, template: readFileSync(path, "utf8") };
+};
+
+const loadStyles = (root: string, deck: DeckName) => {
+  const paths = globbySync([
+    join(root, "{index,styles,style,main}.css"),
+    join(root, TPL_DIR_NAME, `${deck}.css`),
+  ]);
+
+  return paths.map((p) => readFileSync(paths[0], "utf8")).join("\n");
 };
 
 const tplPath = (deck: DeckName) =>

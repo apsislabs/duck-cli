@@ -12,26 +12,11 @@ export type PdfConfig = {
   bleed: number;
 };
 
-type SystemFontDefinition = {
-  name: string;
-  path?: never;
-};
-
-type LocalFontDefinition = {
-  name: string;
-  path: string;
-  weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
-  style?: "normal" | "italic";
-};
-
-export type FontDefinition = SystemFontDefinition | LocalFontDefinition;
-
 export type DeckConfig = {
   width: number;
   height: number;
   backgroundColor?: string;
   pdf?: PdfConfig;
-  fonts?: FontDefinition[];
   format: OutputFormat[];
 };
 

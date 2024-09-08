@@ -5,7 +5,7 @@ import { join, resolve } from "path";
 import puppeteer from "puppeteer";
 import * as ReactDOMServer from "react-dom/server";
 import { CardData, DeckConfig, DeckName } from "../types.js";
-import { withBrowser, withPage } from "./puppeteer.js";
+import { withBrowser, withPage } from "../utils/puppeteer.js";
 
 const swcrc: Options = {
   jsc: {
@@ -30,7 +30,8 @@ export const renderJsx = async (
   data: CardData[],
   deck: DeckName,
   cachedir: string,
-  config: DeckConfig
+  config: DeckConfig,
+  styles?: string
 ) => {
   const { code } = await transform(jsx, swcrc);
 
@@ -51,14 +52,15 @@ export const renderJsx = async (
   );
   console.timeEnd("jsx");
 
-  return await renderJpegs(renders, config);
+  return await renderJpegs(renders, config, styles);
 };
 
 export const renderHtml = async (
   html: string,
   data: CardData[],
   deck: DeckName,
-  config: DeckConfig
+  config: DeckConfig,
+  styles?: string
 ) => {
   console.time("hbs");
   const tpl = Handlebars.compile(html);
@@ -67,10 +69,14 @@ export const renderHtml = async (
   );
   console.timeEnd("hbs");
 
-  return await renderJpegs(renders, config);
+  return await renderJpegs(renders, config, styles);
 };
 
-const renderJpegs = async (renders: string[], config: DeckConfig) => {
+const renderJpegs = async (
+  renders: string[],
+  config: DeckConfig,
+  styles?: string
+) => {
   const { width, height } = config;
   const clip = { x: 0, y: 0, width, height };
   const viewport = { width, height };
@@ -87,7 +93,13 @@ const renderJpegs = async (renders: string[], config: DeckConfig) => {
     return await withPage(browser, async (page) => {
       return Promise.all(
         renders.map(async (html) => {
+
           await page.setContent(html);
+
+          if (styles) {
+            page.addStyleTag({ content: styles });
+          }
+
           await page.setViewport(viewport);
 
           return await page.screenshot(options);

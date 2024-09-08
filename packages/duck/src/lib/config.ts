@@ -11,7 +11,6 @@ const DEFAULT_CONFIG: DeckConfig = {
   width: 825,
   height: 1125,
   backgroundColor: "#fff",
-  fonts: [{ name: "Arial" }, { name: "Times New Roman" }],
   format: ["png"],
   pdf: {
     layout: "letter",
