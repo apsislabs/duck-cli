@@ -25,7 +25,7 @@
 
 - [X] Move templates to create dir
 - [ ] Fix print-n-play PDF generation
-- [ ] Add support for stylesheet per deck
+- [X] Add support for stylesheet per deck
 - [ ] Add ability to proof
 - [ ] Split CLI and core
 - [ ] Switch from yaml config to json config with $schema

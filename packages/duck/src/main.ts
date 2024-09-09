@@ -4,13 +4,14 @@ import minimist from "minimist";
 import { extname, join, resolve } from "path";
 import { BuildCmdArgs, CardData, DeckName } from "./types.js";
 
-import { globby, globbySync } from "globby";
+import { globbySync } from "globby";
 import { flatMap } from "lodash-es";
+import { DEFAULT_PATH, OUT_DIR_NAME, TPL_DIR_NAME } from "./constants.js";
 import { loadConfig } from "./lib/config.js";
 import { loadData } from "./lib/data.js";
-import { renderHtml, renderJsx } from "./lib/render.js";
+import { renderTemplate } from "./lib/template.js";
 import { mkdirp } from "./utils/fs.js";
-import { DEFAULT_PATH, OUT_DIR_NAME, TPL_DIR_NAME } from "./constants.js";
+import { renderJpegs } from "./lib/render.js";
 
 const getArgs = (): BuildCmdArgs => {
   const raw = minimist(process.argv);
@@ -20,6 +21,8 @@ const getArgs = (): BuildCmdArgs => {
     decks: raw.decks ?? undefined,
   };
 };
+
+const JSX_TEMPLATE_EXTENSIONS = [".js", ".jsx", ".ts", ".tsx"];
 
 const main = async () => {
   const args = getArgs();
@@ -39,28 +42,21 @@ const main = async () => {
   for (const [deck, data] of decks) {
     const { template, path } = loadTemplate(root, deck);
     const styles = loadStyles(root, deck);
-    const tplType = extname(path);
+    const tplType = JSX_TEMPLATE_EXTENSIONS.includes(extname(path))
+      ? "jsx"
+      : "html";
 
     console.log(`Rendering ${deck} from ${path}...`);
+    const htmls = await renderTemplate(
+      tplType,
+      template,
+      data,
+      deck,
+      cachedir,
+      config[deck]
+    );
 
-    if (tplType === ".jsx" || tplType === ".tsx") {
-      renders[deck] = await renderJsx(
-        template,
-        data,
-        deck,
-        cachedir,
-        config[deck],
-        styles
-      );
-    } else {
-      renders[deck] = await renderHtml(
-        template,
-        data,
-        deck,
-        config[deck],
-        styles
-      );
-    }
+    renders[deck] = await renderJpegs(htmls, config[deck], styles);
   }
 
   console.time("save");
@@ -78,7 +74,10 @@ const main = async () => {
 };
 
 const loadTemplate = (root: string, deck: DeckName) => {
-  const paths = globbySync(join(root, TPL_DIR_NAME, tplPath(deck)));
+  const paths = globbySync(
+    join(root, TPL_DIR_NAME, `${deck}.{jsx,tsx,html,mu,mustache,hb,handlebars}`)
+  );
+
   const path = paths[0];
   return { path, template: readFileSync(path, "utf8") };
 };
@@ -91,9 +90,6 @@ const loadStyles = (root: string, deck: DeckName) => {
 
   return paths.map((p) => readFileSync(paths[0], "utf8")).join("\n");
 };
-
-const tplPath = (deck: DeckName) =>
-  `${deck}.{jsx,tsx,html,mu,mustache,hb,handlebars}`;
 
 const cardName = (
   deckName: DeckName,

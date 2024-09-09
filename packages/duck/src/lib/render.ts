@@ -1,78 +1,8 @@
-import { Options, transform } from "@swc/core";
-import { writeFileSync } from "fs";
-import Handlebars from "handlebars";
-import { join, resolve } from "path";
 import puppeteer from "puppeteer";
-import * as ReactDOMServer from "react-dom/server";
-import { CardData, DeckConfig, DeckName } from "../types.js";
+import { DeckConfig } from "../types.js";
 import { withBrowser, withPage } from "../utils/puppeteer.js";
 
-const swcrc: Options = {
-  jsc: {
-    parser: {
-      syntax: "typescript",
-      tsx: true,
-    },
-    transform: {
-      react: {
-        runtime: "automatic",
-      },
-    },
-  },
-  module: {
-    type: "commonjs",
-  },
-  minify: false,
-};
-
-export const renderJsx = async (
-  jsx: string,
-  data: CardData[],
-  deck: DeckName,
-  cachedir: string,
-  config: DeckConfig,
-  styles?: string
-) => {
-  const { code } = await transform(jsx, swcrc);
-
-  const tplPath = join(cachedir, `${deck}.cjs`);
-  writeFileSync(tplPath, code);
-
-  console.time("jsx");
-  const tpl = (await import(resolve(tplPath))).default;
-  const renders = data.map((d, cardIndex) =>
-    ReactDOMServer.renderToStaticMarkup(
-      tpl.default({
-        ...d,
-        cardIndex,
-        deck,
-        config,
-      })
-    )
-  );
-  console.timeEnd("jsx");
-
-  return await renderJpegs(renders, config, styles);
-};
-
-export const renderHtml = async (
-  html: string,
-  data: CardData[],
-  deck: DeckName,
-  config: DeckConfig,
-  styles?: string
-) => {
-  console.time("hbs");
-  const tpl = Handlebars.compile(html);
-  const renders = data.map((d, cardIndex) =>
-    tpl({ ...d, cardIndex, deck, config })
-  );
-  console.timeEnd("hbs");
-
-  return await renderJpegs(renders, config, styles);
-};
-
-const renderJpegs = async (
+export const renderJpegs = async (
   renders: string[],
   config: DeckConfig,
   styles?: string
@@ -93,7 +23,6 @@ const renderJpegs = async (
     return await withPage(browser, async (page) => {
       return Promise.all(
         renders.map(async (html) => {
-
           await page.setContent(html);
 
           if (styles) {
