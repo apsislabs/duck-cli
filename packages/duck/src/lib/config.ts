@@ -11,12 +11,12 @@ const DEFAULT_CONFIG: DeckConfig = {
   width: 825,
   height: 1125,
   backgroundColor: "#fff",
+  bleed: .125,
   format: ["png"],
   pdf: {
     size: "letter",
     layout: "landscape",
     trim_lines: true,
-    bleed: 37.5,
     margin: 0.25,
   },
 };

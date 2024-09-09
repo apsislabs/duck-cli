@@ -24,6 +24,7 @@ const getArgs = (): BuildCmdArgs => {
   const raw = minimist(process.argv);
 
   return {
+    proof: raw.proof ?? false,
     path: raw.path ?? DEFAULT_PATH,
     decks: raw.decks ?? undefined,
   };
@@ -62,7 +63,8 @@ const main = async () => {
       data,
       deck,
       cachedir,
-      config[deck]
+      config[deck],
+      args.proof
     );
 
     renders[deck] = await renderPngs(htmls, config[deck], styles);
@@ -81,7 +83,7 @@ const saveRenders = async (
   for (const deck in renders) {
     if (Object.prototype.hasOwnProperty.call(renders, deck)) {
       const buffers = renders[deck as DeckName];
-      console.timeEnd("save");
+      console.time("save");
       const paths = await Promise.all(
         buffers.map(async (b, idx) => {
           const path = join(
@@ -94,7 +96,7 @@ const saveRenders = async (
           return path;
         })
       );
-      console.time("save");
+      console.timeEnd("save");
 
       console.time("save pdf");
       await renderPdf(paths, config[deck as DeckName], outdir, "png");

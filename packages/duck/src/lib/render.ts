@@ -5,7 +5,66 @@ import puppeteer from "puppeteer";
 import { PAGE_SIZES } from "../constants.js";
 import { DeckConfig } from "../types.js";
 import { withBrowser, withPage } from "../utils/puppeteer.js";
-import { insToPts, pxToPts } from "../utils/units.js";
+import { insToPts, insToPx, pxToPts } from "../utils/units.js";
+
+const DEFAULT_CSS = `
+//
+// https://www.joshwcomeau.com/css/custom-css-reset/
+//
+
+/*
+  1. Use a more-intuitive box-sizing model.
+*/
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/*
+  2. Remove default margin
+*/
+* {
+  margin: 0;
+}
+
+/*
+  Typographic tweaks!
+  3. Add accessible line-height
+  4. Improve text rendering
+*/
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+  5. Improve media defaults
+*/
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/*
+  6. Remove built-in form typography styles
+*/
+input, button, textarea, select {
+  font: inherit;
+}
+
+/*
+  7. Avoid text overflows
+*/
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/*
+  8. Create a root stacking context
+*/
+#root, #__duck {
+  isolation: isolate;
+}
+`;
 
 export const renderJpegs = async (
   renders: string[],
@@ -45,7 +104,6 @@ const renderImages = async (
   const clip = { x: 0, y: 0, width, height };
   const viewport = { width, height };
   const opts = {
-    omitBackground: true,
     ...options,
     clip,
   };
@@ -54,7 +112,9 @@ const renderImages = async (
     return await withPage(browser, async (page) => {
       let out = [];
       for (const html of renders) {
-        await page.setContent(html);
+        await page.setContent(`<div id="__duck">${html}</div>`);
+
+        page.addStyleTag({ content: DEFAULT_CSS });
 
         if (styles) {
           page.addStyleTag({ content: styles });
@@ -84,12 +144,7 @@ export const renderPdf = async (
     return;
   }
 
-  let {
-    layout = "landscape",
-    size = "letter",
-    margin = 0.125,
-    bleed,
-  } = config.pdf;
+  let { layout = "landscape", size = "letter", margin = 0.125 } = config.pdf;
 
   const pageSize =
     layout === "landscape" ? PAGE_SIZES[size] : invert(PAGE_SIZES[size]);
@@ -100,9 +155,9 @@ export const renderPdf = async (
   let cardWidthPx = config.width;
   let cardHeightPx = config.height;
 
-  if (bleed) {
-    cardWidthPx = cardWidthPx - bleed * 2;
-    cardHeightPx = cardHeightPx - bleed * 2;
+  if (config.bleed) {
+    cardWidthPx = cardWidthPx - insToPx(config.bleed) * 2;
+    cardHeightPx = cardHeightPx - insToPx(config.bleed) * 2;
   }
 
   // Calculate all layout values

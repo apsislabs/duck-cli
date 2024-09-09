@@ -61,7 +61,6 @@ export type PdfConfig = {
   layout: "landscape" | "portrait";
   size: PaperSize;
   margin: number;
-  bleed: number;
   trim_lines: boolean;
 };
 
@@ -69,6 +68,7 @@ export type DeckConfig = {
   width: number;
   height: number;
   backgroundColor?: string;
+  bleed: number;
   pdf?: PdfConfig;
   format: OutputFormat[];
 };
@@ -76,6 +76,7 @@ export type DeckConfig = {
 export type CardData = Record<string, string | number>;
 
 export type BuildCmdArgs = {
+  proof?: boolean;
   path?: string;
   decks?: DeckName[];
 };
