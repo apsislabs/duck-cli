@@ -1,7 +1,8 @@
 {
   "name": "@duck/duck",
-  "version": "2.0.0",
+  "version": "2.0.0-beta1",
   "description": "",
+  "main": "dist/main.js",
   "scripts": {
     "clean": "rimraf dist",
     "build": "rollup --config rollup.config.js",

@@ -1,4 +1,6 @@
-const Card = (props) => {
+import { CardComponentProps } from "@duck/core";
+
+const Card: React.FC<CardComponentProps> = (props) => {
   return <div>Hello world</div>;
 };
 

@@ -63,7 +63,6 @@ export type PdfConfig = {
   margin: number;
   bleed: number;
   trim_lines: boolean;
-  bleed: number;
 };
 
 export type DeckConfig = {

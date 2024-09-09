@@ -1,13 +1,11 @@
 import { chunk, times } from "lodash-es";
-import { PDFDocument, PDFPage, rgb } from "pdf-lib";
-import puppeteer from "puppeteer";
-import { DeckConfig, PaperSize } from "../types.js";
-import { withBrowser, withPage } from "../utils/puppeteer.js";
-import { insToPts, pxToPts } from "../utils/units.js";
-import { PAGE_SIZES } from "../constants.js";
 import { Recipe } from "muhammara";
 import { join, resolve } from "path";
-import { writeFileSync } from "fs";
+import puppeteer from "puppeteer";
+import { PAGE_SIZES } from "../constants.js";
+import { DeckConfig } from "../types.js";
+import { withBrowser, withPage } from "../utils/puppeteer.js";
+import { insToPts, pxToPts } from "../utils/units.js";
 
 export const renderJpegs = async (
   renders: string[],
@@ -173,7 +171,6 @@ const drawGuides = (
   cardHeightPts: number,
   margin: number
 ) => {
-
   const [width, height] = pageSize;
   const lineParams = { dash: [3, 3], color: "#cccccc", lineWidth: 0.5 };
 

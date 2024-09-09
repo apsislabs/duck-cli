@@ -1,17 +1,24 @@
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { writeFile } from "fs/promises";
 import minimist from "minimist";
 import { extname, join, resolve } from "path";
-import { BuildCmdArgs, CardData, DeckName } from "./types.js";
+import { BuildCmdArgs, CardData, DeckConfig, DeckName } from "./types.js";
 
 import { globbySync } from "globby";
-import { flatMap } from "lodash-es";
 import { DEFAULT_PATH, OUT_DIR_NAME, TPL_DIR_NAME } from "./constants.js";
 import { loadConfig } from "./lib/config.js";
 import { loadData } from "./lib/data.js";
+import { renderPdf, renderPngs } from "./lib/render.js";
 import { renderTemplate } from "./lib/template.js";
 import { mkdirp } from "./utils/fs.js";
-import { renderPdf, renderJpegs, renderPngs } from "./lib/render.js";
+
+export type CardComponentProps<DataType extends unknown = unknown> =
+  DataType & {
+    [key: string]: any;
+    cardIndex: number;
+    deck: DeckName;
+    config: DeckConfig;
+  };
 
 const getArgs = (): BuildCmdArgs => {
   const raw = minimist(process.argv);
@@ -61,36 +68,39 @@ const main = async () => {
     renders[deck] = await renderPngs(htmls, config[deck], styles);
   }
 
-  console.time("save");
+  await saveRenders(outdir, renders, config);
+
+  console.timeEnd("duck");
+};
+
+const saveRenders = async (
+  outdir: string,
+  renders: Record<DeckName, Uint8Array[]>,
+  config: Record<DeckName, DeckConfig>
+) => {
   for (const deck in renders) {
     if (Object.prototype.hasOwnProperty.call(renders, deck)) {
       const buffers = renders[deck as DeckName];
-      const paths = await Promise.all(buffers.map(async (b, idx) => {
-        const path = join(
-          outdir,
-          cardName(deck as DeckName, idx, buffers.length, "png")
-        );
+      console.timeEnd("save");
+      const paths = await Promise.all(
+        buffers.map(async (b, idx) => {
+          const path = join(
+            outdir,
+            cardName(deck as DeckName, idx, buffers.length, "png")
+          );
 
-        await writeFile(path, b);
+          await writeFile(path, b);
 
-        return path;
-      }));
+          return path;
+        })
+      );
+      console.time("save");
 
       console.time("save pdf");
       await renderPdf(paths, config[deck as DeckName], outdir, "png");
       console.timeEnd("save pdf");
     }
   }
-  console.timeEnd("save");
-
-  // await Promise.all(
-  //   flatMap(pdfs, async (buffer, deck) => {
-  //     if (buffer) {
-  //       writeFile(join(outdir, `${deck}.pdf`), buffer);
-  //     }
-  //   })
-  // );
-  console.timeEnd("duck");
 };
 
 const loadTemplate = (root: string, deck: DeckName) => {

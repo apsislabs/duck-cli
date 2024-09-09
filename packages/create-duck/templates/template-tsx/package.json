@@ -6,11 +6,11 @@
   },
   "private": true,
   "devDependencies": {
-    "duck-cli": "1.5.2"
+    "@duck/core": "2.0.0"
   },
   "type": "module",
   "dependencies": {
-    "react": "^16.14.0"
+    "react": "^18.3.1"
   },
   "version": "0.0.1"
 }

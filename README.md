@@ -24,8 +24,9 @@
 ## TODO
 
 - [X] Move templates to create dir
-- [ ] Fix print-n-play PDF generation
+- [X] Fix print-n-play PDF generation
 - [X] Add support for stylesheet per deck
 - [ ] Add ability to proof
+- [ ] Export Card type for TSX
 - [ ] Split CLI and core
 - [ ] Switch from yaml config to json config with $schema
