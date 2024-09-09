@@ -52,19 +52,20 @@ const renderImages = async (
 
   const pngs = await withBrowser(async (browser) => {
     return await withPage(browser, async (page) => {
-      return Promise.all(
-        renders.map(async (html) => {
-          await page.setContent(html);
+      let out = [];
+      for (const html of renders) {
+        await page.setContent(html);
 
-          if (styles) {
-            page.addStyleTag({ content: styles });
-          }
+        if (styles) {
+          page.addStyleTag({ content: styles });
+        }
 
-          await page.setViewport(viewport);
+        await page.setViewport(viewport);
 
-          return await page.screenshot(opts);
-        })
-      );
+        out.push(await page.screenshot(opts));
+      }
+
+      return out;
     });
   });
 

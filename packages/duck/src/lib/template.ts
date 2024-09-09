@@ -60,6 +60,8 @@ const renderJsx = async (
       deck,
       config,
     };
+
+
     return ReactDOMServer.renderToStaticMarkup(tpl.default(props));
   });
   console.timeEnd("jsx");

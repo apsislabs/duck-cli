@@ -47,7 +47,7 @@ const main = async () => {
 
   const decks = Object.entries(data) as [DeckName, CardData[]][];
   let renders: Record<DeckName, Uint8Array[]> = {};
-  // let pdfs: Record<DeckName, Uint8Array | undefined> = {};
+
   for (const [deck, data] of decks) {
     const { template, path } = loadTemplate(root, deck);
     const styles = loadStyles(root, deck);
