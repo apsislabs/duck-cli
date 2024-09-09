@@ -2,8 +2,8 @@ example:
   # template: deck.js
   # filename: "deck_${cardIndex}"
   # explode: qty
-  width: 825
-  height: 1125
+  width: 600
+  height: 600
   pdf:
     layout: letter
     trim_lines: true

@@ -6,8 +6,62 @@ export type DeckName = Branded<string, "deck">;
 
 export type OutputFormat = "png" | "pdf" | "svg";
 
+export type PaperSize =
+  | "executive"
+  | "folio"
+  | "legal"
+  | "letter"
+  | "ledger"
+  | "tabloid"
+  | "a0"
+  | "a1"
+  | "a2"
+  | "a3"
+  | "a4"
+  | "a5"
+  | "a6"
+  | "a7"
+  | "a8"
+  | "a9"
+  | "a10"
+  | "b0"
+  | "b1"
+  | "b2"
+  | "b3"
+  | "b4"
+  | "b5"
+  | "b6"
+  | "b7"
+  | "b8"
+  | "b9"
+  | "b10"
+  | "c0"
+  | "c1"
+  | "c2"
+  | "c3"
+  | "c4"
+  | "c5"
+  | "c6"
+  | "c7"
+  | "c8"
+  | "c9"
+  | "c10"
+  | "ra0"
+  | "ra1"
+  | "ra2"
+  | "ra3"
+  | "ra4"
+  | "sra0"
+  | "sra1"
+  | "sra2"
+  | "sra3"
+  | "sra4";
+
 export type PdfConfig = {
-  layout: "letter";
+  layout: "landscape" | "portrait";
+  size: PaperSize;
+  margin: number;
+  bleed: number;
   trim_lines: boolean;
   bleed: number;
 };

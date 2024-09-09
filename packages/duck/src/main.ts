@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { writeFile } from "fs/promises";
 import minimist from "minimist";
 import { extname, join, resolve } from "path";
@@ -11,7 +11,7 @@ import { loadConfig } from "./lib/config.js";
 import { loadData } from "./lib/data.js";
 import { renderTemplate } from "./lib/template.js";
 import { mkdirp } from "./utils/fs.js";
-import { renderJpegs } from "./lib/render.js";
+import { renderPdf, renderJpegs, renderPngs } from "./lib/render.js";
 
 const getArgs = (): BuildCmdArgs => {
   const raw = minimist(process.argv);
@@ -25,6 +25,7 @@ const getArgs = (): BuildCmdArgs => {
 const JSX_TEMPLATE_EXTENSIONS = [".js", ".jsx", ".ts", ".tsx"];
 
 const main = async () => {
+  console.time("duck");
   const args = getArgs();
   const root = resolve(args.path ?? DEFAULT_PATH);
   const config = loadConfig(root, args);
@@ -39,6 +40,7 @@ const main = async () => {
 
   const decks = Object.entries(data) as [DeckName, CardData[]][];
   let renders: Record<DeckName, Uint8Array[]> = {};
+  // let pdfs: Record<DeckName, Uint8Array | undefined> = {};
   for (const [deck, data] of decks) {
     const { template, path } = loadTemplate(root, deck);
     const styles = loadStyles(root, deck);
@@ -56,21 +58,39 @@ const main = async () => {
       config[deck]
     );
 
-    renders[deck] = await renderJpegs(htmls, config[deck], styles);
+    renders[deck] = await renderPngs(htmls, config[deck], styles);
   }
 
   console.time("save");
-  await Promise.all(
-    flatMap(renders, (buffers, deck) => {
-      buffers.map((b, idx) =>
-        writeFile(
-          join(outdir, cardName(deck as DeckName, idx, buffers.length, "jpg")),
-          b
-        )
-      );
-    })
-  );
+  for (const deck in renders) {
+    if (Object.prototype.hasOwnProperty.call(renders, deck)) {
+      const buffers = renders[deck as DeckName];
+      const paths = await Promise.all(buffers.map(async (b, idx) => {
+        const path = join(
+          outdir,
+          cardName(deck as DeckName, idx, buffers.length, "png")
+        );
+
+        await writeFile(path, b);
+
+        return path;
+      }));
+
+      console.time("save pdf");
+      await renderPdf(paths, config[deck as DeckName], outdir, "png");
+      console.timeEnd("save pdf");
+    }
+  }
   console.timeEnd("save");
+
+  // await Promise.all(
+  //   flatMap(pdfs, async (buffer, deck) => {
+  //     if (buffer) {
+  //       writeFile(join(outdir, `${deck}.pdf`), buffer);
+  //     }
+  //   })
+  // );
+  console.timeEnd("duck");
 };
 
 const loadTemplate = (root: string, deck: DeckName) => {
@@ -88,7 +108,7 @@ const loadStyles = (root: string, deck: DeckName) => {
     join(root, TPL_DIR_NAME, `${deck}.css`),
   ]);
 
-  return paths.map((p) => readFileSync(paths[0], "utf8")).join("\n");
+  return paths.map((p) => readFileSync(p, "utf8")).join("\n");
 };
 
 const cardName = (
