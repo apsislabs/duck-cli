@@ -4,7 +4,7 @@ export type Branded<T, B> = T & Brand<B>;
 
 export type DeckName = Branded<string, "deck">;
 
-export type OutputFormat = "png" | "pdf" | "svg";
+export type OutputFormat = "png" | "pdf" | "jpg";
 
 export type PaperSize =
   | "executive"
@@ -79,4 +79,8 @@ export type BuildCmdArgs = {
   proof?: boolean;
   path?: string;
   decks?: DeckName[];
+};
+export type RenderResult = {
+  pngs?: Uint8Array[];
+  jpgs?: Uint8Array[];
 };

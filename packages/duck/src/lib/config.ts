@@ -11,7 +11,7 @@ const DEFAULT_CONFIG: DeckConfig = {
   width: 825,
   height: 1125,
   backgroundColor: "#fff",
-  bleed: .125,
+  bleed: 0.125,
   format: ["png"],
   pdf: {
     size: "letter",
@@ -23,10 +23,10 @@ const DEFAULT_CONFIG: DeckConfig = {
 
 export const loadConfig = (
   root: string,
-  args: BuildCmdArgs = {}
+  only?: DeckName[]
 ): Record<DeckName, DeckConfig> => {
   const loaded = loadFile(root);
-  const filtered = filterConfigs(loaded, args);
+  const filtered = filterConfigs(loaded, only);
 
   return fillDefaults(filtered);
 };
@@ -39,13 +39,10 @@ const loadFile = (root: string) =>
 
 const filterConfigs = (
   confs: Record<DeckName, DeckConfig>,
-  args: BuildCmdArgs = {}
+  decks?: DeckName[]
 ): Record<DeckName, DeckConfig> =>
-  args.decks
-    ? pickBy(
-        confs,
-        (_conf, deck) => args.decks && args.decks.includes(deck as DeckName)
-      )
+  decks
+    ? pickBy(confs, (_conf, deck) => decks && decks.includes(deck as DeckName))
     : confs;
 
 const fillDefaults = (confs: Record<DeckName, DeckConfig>) =>
