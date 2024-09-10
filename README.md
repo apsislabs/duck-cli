@@ -26,7 +26,12 @@
 - [X] Move templates to create dir
 - [X] Fix print-n-play PDF generation
 - [X] Add support for stylesheet per deck
-- [ ] Add ability to proof
-- [ ] Export Card type for TSX
+- [X] Add ability to proof
+- [X] Export Card type for TSX
+- [X] Fix cropping
+- [ ] Obey export types
+- [ ] Output PDF with correct name, images to subdir
+- [ ] Restore all relevant v1 options
 - [ ] Split CLI and core
 - [ ] Switch from yaml config to json config with $schema
+- [ ] Add tests

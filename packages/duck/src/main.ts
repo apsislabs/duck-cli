@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { writeFile } from "fs/promises";
+import { unlink, writeFile } from "fs/promises";
 import minimist from "minimist";
 import { extname, join, resolve } from "path";
 import { BuildCmdArgs, CardData, DeckConfig, DeckName } from "./types.js";
@@ -11,6 +11,8 @@ import { loadData } from "./lib/data.js";
 import { renderPdf, renderPngs } from "./lib/render.js";
 import { renderTemplate } from "./lib/template.js";
 import { mkdirp } from "./utils/fs.js";
+import { crop } from "./lib/crop.js";
+import { compact } from "lodash-es";
 
 export type CardComponentProps<DataType extends unknown = unknown> =
   DataType & {
@@ -70,40 +72,71 @@ const main = async () => {
     renders[deck] = await renderPngs(htmls, config[deck], styles);
   }
 
-  await saveRenders(outdir, renders, config);
+  await saveRenders(outdir, cachedir, renders, config);
 
   console.timeEnd("duck");
 };
 
 const saveRenders = async (
   outdir: string,
+  cachedir: string,
   renders: Record<DeckName, Uint8Array[]>,
   config: Record<DeckName, DeckConfig>
 ) => {
   for (const deck in renders) {
     if (Object.prototype.hasOwnProperty.call(renders, deck)) {
+      const conf = config[deck as DeckName];
       const buffers = renders[deck as DeckName];
-      console.time("save");
-      const paths = await Promise.all(
-        buffers.map(async (b, idx) => {
-          const path = join(
-            outdir,
-            cardName(deck as DeckName, idx, buffers.length, "png")
-          );
+      const paths = await saveImages(buffers, outdir, deck as DeckName, "png");
 
-          await writeFile(path, b);
+      if (conf.pdf) {
+        const croppedBuffers = await crop(buffers, conf);
+        const croppedPaths = await saveImages(
+          croppedBuffers,
+          cachedir,
+          deck as DeckName,
+          "png",
+          "crop"
+        );
 
-          return path;
-        })
-      );
-      console.timeEnd("save");
-
-      console.time("save pdf");
-      await renderPdf(paths, config[deck as DeckName], outdir, "png");
-      console.timeEnd("save pdf");
+        console.time("save pdf");
+        await renderPdf(croppedPaths, conf, outdir, "png");
+        deleteImages(croppedPaths);
+        console.timeEnd("save pdf");
+      }
     }
   }
 };
+
+const saveImages = async (
+  buffers: Uint8Array[],
+  outdir: string,
+  deck: DeckName,
+  ext: "png" | "jpg" = "png",
+  prefix: string = ""
+) => {
+  console.time(`save ${ext}`);
+
+  const paths = await Promise.all(
+    buffers.map(async (b, idx) => {
+      const path = join(
+        outdir,
+        cardName(deck as DeckName, idx, buffers.length, ext, prefix)
+      );
+
+      await writeFile(path, b);
+
+      return path;
+    })
+  );
+
+  console.timeEnd(`save ${ext}`);
+
+  return paths;
+};
+
+const deleteImages = async (paths: string[]) =>
+  await Promise.all(paths.map((p) => unlink(resolve(p))));
 
 const loadTemplate = (root: string, deck: DeckName) => {
   const paths = globbySync(
@@ -127,8 +160,13 @@ const cardName = (
   deckName: DeckName,
   cardIdx: number,
   numCards: number,
-  ext: string = "png"
+  ext: string = "png",
+  prefix: string = ""
 ) =>
-  `${deckName}${cardIdx.toString().padStart(numCards.toString().length, "0")}.${ext}`;
+  `${compact([
+    deckName,
+    prefix,
+    cardIdx.toString().padStart(numCards.toString().length, "0"),
+  ]).join("_")}.${ext}`;
 
 main();
