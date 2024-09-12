@@ -3,7 +3,7 @@ import yaml from "js-yaml";
 import { assign, cloneDeep, pickBy, reduce } from "lodash-es";
 import { join } from "path";
 
-import { BuildCmdArgs, DeckConfig, DeckName } from "../types.js";
+import { DeckConfig, DeckName } from "../types.js";
 
 export const CONFIG_FILE_NAME = "decks.config.yml";
 

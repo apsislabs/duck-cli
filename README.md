@@ -31,7 +31,7 @@
 - [X] Fix cropping
 - [X] Obey export types
 - [ ] Output PDF with correct name, images to subdir
-- [ ] Restore all relevant v1 options
-- [ ] Split CLI and core
+- [X] Restore all relevant v1 options
+- [X] Split CLI and core
 - [ ] Switch from yaml config to json config with $schema
 - [ ] Add tests

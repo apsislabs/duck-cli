@@ -75,12 +75,16 @@ export type DeckConfig = {
 
 export type CardData = Record<string, string | number>;
 
-export type BuildCmdArgs = {
-  proof?: boolean;
-  path?: string;
-  decks?: DeckName[];
-};
 export type RenderResult = {
   pngs?: Uint8Array[];
   jpgs?: Uint8Array[];
 };
+
+export type CardComponentProps<DataType extends unknown = unknown> =
+  DataType & {
+    [key: string]: any;
+    cardIndex: number;
+    deck: DeckName;
+    config: DeckConfig;
+  };
+

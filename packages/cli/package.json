@@ -1,0 +1,39 @@
+{
+    "name": "@duck/cli",
+    "version": "2.0.0-beta1",
+    "main": "dist/main.js",
+    "scripts": {
+        "clean": "rimraf dist",
+        "build": "rollup --config rollup.config.js",
+        "dev": "rollup -w --config rollup.config.js",
+        "predev": "npm run clean",
+        "prebuild": "npm run clean",
+        "preversion": "npm run build"
+    },
+    "type": "module",
+    "bin": {
+        "duck": "dist/main.js"
+    },
+    "author": "Apsis Labs",
+    "license": "MIT",
+    "dependencies": {
+        "@duck/duck": "file:../duck",
+        "capture-console": "^1.0.2",
+        "commander": "^12.1.0",
+        "nanospinner": "^1.1.0",
+        "picocolors": "^1.1.0"
+    },
+    "devDependencies": {
+        "@rollup/plugin-typescript": "^11.1.6",
+        "@types/capture-console": "^1.0.5",
+        "@types/node": "^22.5.2",
+        "husky": "^9.1.5",
+        "prettier": "^3.3.3",
+        "pretty-quick": "^4.0.0",
+        "rollup": "^4.21.2",
+        "tslib": "^2.7.0"
+    },
+    "peerDependencies": {
+        "typescript": "^5.5.4"
+    }
+}

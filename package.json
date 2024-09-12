@@ -3,5 +3,8 @@
   "version": "2.0.0",
   "author": "Apsis Labs",
   "license": "MIT",
-  "workspaces": ["packages/duck", "packages/create-duck"]
+  "workspaces": [
+    "packages/duck",
+    "packages/create-duck"
+  ]
 }
