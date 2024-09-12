@@ -59,6 +59,7 @@ const saveImages = async (
       const path = join(
         outdir,
         deck,
+        ext,
         cardName(deck as DeckName, idx, buffers.length, ext, prefix)
       );
 

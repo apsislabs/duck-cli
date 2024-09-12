@@ -30,7 +30,7 @@
 - [X] Export Card type for TSX
 - [X] Fix cropping
 - [X] Obey export types
-- [ ] Output PDF with correct name, images to subdir
+- [X] Output PDF with correct name, images to subdir
 - [X] Restore all relevant v1 options
 - [X] Split CLI and core
 - [ ] Switch from yaml config to json config with $schema

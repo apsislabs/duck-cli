@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import { ScreenshotOptions } from "puppeteer";
 import { DeckConfig } from "../types.js";
 import { withBrowser, withPage } from "../utils/puppeteer.js";
 
@@ -92,7 +92,7 @@ export const renderPngs = async (
 const renderImages = async (
   renders: string[],
   config: DeckConfig,
-  options?: puppeteer.ScreenshotOptions,
+  options?: ScreenshotOptions,
   styles?: string
 ) => {
   const { width, height } = config;
@@ -126,5 +126,3 @@ const renderImages = async (
 
   return pngs;
 };
-
-
