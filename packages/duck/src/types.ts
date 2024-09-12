@@ -87,4 +87,3 @@ export type CardComponentProps<DataType extends unknown = unknown> =
     deck: DeckName;
     config: DeckConfig;
   };
-

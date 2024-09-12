@@ -47,7 +47,7 @@ const intercept = async (cb: () => Promise<void> | void) => {
 };
 
 const main = async (options: BuildOptions) => {
-  console.log(pc.blue("🦆 quack quack!"));
+  console.log(pc.blue("🦆 quack quack!\n"));
 
   const dir = resolve(options.path);
 

@@ -1,5 +1,5 @@
 import { writeFile } from "fs/promises";
-import { join } from "path/posix";
+import { join } from "path";
 import { crop } from "./crop.js";
 import { formatPdf } from "../utils/pdf.js";
 import { cardName } from "../utils/filenames.js";
@@ -11,7 +11,7 @@ export const saveRenders = async (
   cachedir: string,
   renders: RenderResult,
   deck: DeckName,
-  config: DeckConfig
+  config: DeckConfig,
 ) => {
   // Save PNGs
   if (config.format.includes("png") && renders.pngs) {
@@ -24,7 +24,10 @@ export const saveRenders = async (
   }
 
   // Save PDF
-  if (config.format.includes("pdf") && config.pdf &&  renders.pngs || renders.jpgs) {
+  if (
+    (config.format.includes("pdf") && config.pdf && renders.pngs) ||
+    renders.jpgs
+  ) {
     const images = renders.pngs ?? renders.jpgs;
 
     if (images) {
@@ -35,7 +38,7 @@ export const saveRenders = async (
         cachedir,
         deck as DeckName,
         cropExt,
-        "crop"
+        "crop",
       );
 
       await formatPdf(croppedPaths, config, outdir, deck as DeckName);
@@ -50,7 +53,7 @@ const saveImages = async (
   outdir: string,
   deck: DeckName,
   ext: "png" | "jpg" = "png",
-  prefix: string = ""
+  prefix: string = "",
 ) => {
   console.time(`save ${ext}`);
 
@@ -60,13 +63,13 @@ const saveImages = async (
         outdir,
         deck,
         ext,
-        cardName(deck as DeckName, idx, buffers.length, ext, prefix)
+        cardName(deck as DeckName, idx, buffers.length, ext, prefix),
       );
 
       await writeFile(path, b);
 
       return path;
-    })
+    }),
   );
 
   console.timeEnd(`save ${ext}`);

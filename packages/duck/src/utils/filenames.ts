@@ -6,9 +6,10 @@ export const cardName = (
   cardIdx: number,
   numCards: number,
   ext: string = "png",
-  prefix: string = ""
-) => `${compact([
-  deckName,
-  prefix,
-  cardIdx.toString().padStart(numCards.toString().length, "0"),
-]).join("_")}.${ext}`;
+  prefix: string = "",
+) =>
+  `${compact([
+    deckName,
+    prefix,
+    cardIdx.toString().padStart(numCards.toString().length, "0"),
+  ]).join("_")}.${ext}`;

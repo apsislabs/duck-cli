@@ -12,8 +12,8 @@ export const crop = async (buffers: Uint8Array[], config: DeckConfig) => {
     buffers.map((b) =>
       sharp(b)
         .extract({ left: bleedPx, top: bleedPx, width, height })
-        .toBuffer()
-    )
+        .toBuffer(),
+    ),
   );
   console.timeEnd("crop");
 

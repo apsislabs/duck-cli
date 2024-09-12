@@ -1,4 +1,4 @@
-import { extname, join, resolve } from "path/posix";
+import { extname, join, resolve } from "path";
 import { OUT_DIR_NAME } from "../constants.js";
 import { CardData, DeckConfig, DeckName, RenderResult } from "../types.js";
 import { mkdirp } from "../utils/fs.js";
@@ -14,7 +14,7 @@ const JSX_TEMPLATE_EXTENSIONS = [".js", ".jsx", ".ts", ".tsx"];
 export const buildDir = async (
   path: string,
   proof: boolean = false,
-  onlyDecks?: DeckName[]
+  onlyDecks?: DeckName[],
 ) => {
   console.time("duck");
 
@@ -50,7 +50,7 @@ export const buildDir = async (
       config[deck],
       cachedir,
       proof,
-      styles
+      styles,
     );
 
     await saveRenders(outdir, cachedir, result, deck, config[deck]);
@@ -67,7 +67,7 @@ export const buildDeck = async (
   config: DeckConfig,
   cachedir: string = "./",
   proof?: boolean,
-  styles?: string
+  styles?: string,
 ) => {
   let renderResult: RenderResult = {};
 
@@ -78,7 +78,7 @@ export const buildDeck = async (
     deck,
     cachedir,
     config,
-    proof
+    proof,
   );
 
   if (config.format.includes("png") || config.format.includes("pdf")) {

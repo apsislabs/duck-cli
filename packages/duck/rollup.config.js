@@ -15,6 +15,6 @@ export default {
     exports: 'named',
     format: 'esm',
   },
-  external: ['fs', 'path', 'csv-parse/sync', 'datauri/sync.js', ...Object.keys(pkg.dependencies)],
+  external: ['fs', 'path', 'fs/promises', 'react-dom/server', 'csv-parse/sync', 'datauri/sync.js', ...Object.keys(pkg.dependencies)],
   plugins: [typescript()]
 };

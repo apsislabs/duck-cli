@@ -23,7 +23,7 @@ const DEFAULT_CONFIG: DeckConfig = {
 
 export const loadConfig = (
   root: string,
-  only?: DeckName[]
+  only?: DeckName[],
 ): Record<DeckName, DeckConfig> => {
   const loaded = loadFile(root);
   const filtered = filterConfigs(loaded, only);
@@ -39,7 +39,7 @@ const loadFile = (root: string) =>
 
 const filterConfigs = (
   confs: Record<DeckName, DeckConfig>,
-  decks?: DeckName[]
+  decks?: DeckName[],
 ): Record<DeckName, DeckConfig> =>
   decks
     ? pickBy(confs, (_conf, deck) => decks && decks.includes(deck as DeckName))
@@ -52,5 +52,5 @@ const fillDefaults = (confs: Record<DeckName, DeckConfig>) =>
       acc[deck as DeckName] = assign(cloneDeep(DEFAULT_CONFIG), conf);
       return acc;
     },
-    {} as Record<DeckName, DeckConfig>
+    {} as Record<DeckName, DeckConfig>,
   );

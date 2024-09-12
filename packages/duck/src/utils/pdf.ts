@@ -1,6 +1,6 @@
 import { chunk, times } from "lodash-es";
 import { Recipe } from "muhammara";
-import { resolve, join } from "path/posix";
+import { resolve, join } from "path";
 import { PAGE_SIZES } from "../constants.js";
 import { DeckConfig, DeckName } from "../types.js";
 import { insToPx, insToPts, pxToPts } from "./units.js";
@@ -11,7 +11,7 @@ export const formatPdf = async (
   imgPaths: string[],
   config: DeckConfig,
   outdir: string,
-  deck: DeckName
+  deck: DeckName,
 ) => {
   if (!config.pdf) {
     return;
@@ -19,7 +19,8 @@ export const formatPdf = async (
 
   let { layout = "landscape", size = "letter", margin = 0.125 } = config.pdf;
 
-  const pageSize = layout === "landscape" ? PAGE_SIZES[size] : invert(PAGE_SIZES[size]);
+  const pageSize =
+    layout === "landscape" ? PAGE_SIZES[size] : invert(PAGE_SIZES[size]);
 
   const recipe = new Recipe("new", resolve(join(outdir, deck, `${deck}.pdf`)));
 
@@ -79,7 +80,7 @@ export const formatPdf = async (
         cardsPerRow,
         cardWidthPts,
         cardHeightPts,
-        marginPts
+        marginPts,
       );
     }
 
@@ -96,7 +97,7 @@ const drawGuides = (
   cardsPerRow: number,
   cardWidthPts: number,
   cardHeightPts: number,
-  margin: number
+  margin: number,
 ) => {
   const [width, height] = pageSize;
   const lineParams = { dash: [3, 3], color: "#cccccc", lineWidth: 0.5 };
@@ -110,7 +111,7 @@ const drawGuides = (
         [0, y],
         [width, y],
       ],
-      lineParams
+      lineParams,
     );
 
     if (rowIdx === 0) {
@@ -123,7 +124,7 @@ const drawGuides = (
             [x, 0],
             [x, height],
           ],
-          lineParams
+          lineParams,
         );
       });
     }

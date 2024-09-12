@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer, { Browser, Page } from "puppeteer";
 
 const minimal_args = [
   "--autoplay-policy=user-gesture-required",
@@ -38,9 +38,7 @@ const minimal_args = [
   "--use-mock-keychain",
 ];
 
-export const withBrowser = async <T>(
-  fn: (browser: puppeteer.Browser) => Promise<T>
-) => {
+export const withBrowser = async <T>(fn: (browser: Browser) => Promise<T>) => {
   const browser = await puppeteer.launch({
     headless: true,
     args: minimal_args,
@@ -54,8 +52,8 @@ export const withBrowser = async <T>(
 };
 
 export const withPage = async <T>(
-  browser: puppeteer.Browser,
-  fn: (page: puppeteer.Page, browser: puppeteer.Browser) => Promise<T>
+  browser: Browser,
+  fn: (page: Page, browser: Browser) => Promise<T>,
 ) => {
   const page = await browser.newPage();
 

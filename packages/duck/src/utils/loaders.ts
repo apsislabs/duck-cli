@@ -1,12 +1,16 @@
 import { readFileSync } from "fs";
 import { globbySync } from "globby";
-import { join } from "path/posix";
+import { join } from "path";
 import { TPL_DIR_NAME } from "../constants.js";
 import { DeckName } from "../types.js";
 
 export const loadTemplate = (root: string, deck: DeckName) => {
   const paths = globbySync(
-    join(root, TPL_DIR_NAME, `${deck}.{jsx,tsx,html,mu,mustache,hb,handlebars}`)
+    join(
+      root,
+      TPL_DIR_NAME,
+      `${deck}.{jsx,tsx,html,mu,mustache,hb,handlebars}`,
+    ),
   );
 
   const path = paths[0];

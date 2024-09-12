@@ -8,7 +8,8 @@
     "dev": "rollup -w --config rollup.config.js",
     "predev": "npm run clean",
     "prebuild": "npm run clean",
-    "preversion": "npm run build"
+    "preversion": "npm run build",
+    "prettier": "prettier -w \"src/**/*.{ts,js}\""
   },
   "type": "module",
   "author": "Apsis Labs",

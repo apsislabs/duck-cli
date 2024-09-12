@@ -32,7 +32,7 @@ export const renderTemplate = async (
   deck: DeckName,
   cachedir: string,
   config: DeckConfig,
-  proof: boolean = false
+  proof: boolean = false,
 ) => {
   if (type === "jsx") {
     return renderJsx(tpl, data, deck, cachedir, config, proof);
@@ -47,7 +47,7 @@ const renderJsx = async (
   deck: DeckName,
   cachedir: string,
   config: DeckConfig,
-  proof: boolean = false
+  proof: boolean = false,
 ) => {
   const { code } = await transform(jsx, swcrc);
 
@@ -78,7 +78,7 @@ const renderHtml = async (
   data: CardData[],
   deck: DeckName,
   config: DeckConfig,
-  proof: boolean = false
+  proof: boolean = false,
 ) => {
   console.time("hbs");
   const tpl = Handlebars.compile(html);

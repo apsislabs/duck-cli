@@ -64,14 +64,14 @@ p, h1, h2, h3, h4, h5, h6 {
 export const renderJpegs = async (
   renders: string[],
   config: DeckConfig,
-  styles?: string
+  styles?: string,
 ) => {
   console.time("jpg");
   const imgs = await renderImages(
     renders,
     config,
     { type: "jpeg", quality: 100 },
-    styles
+    styles,
   );
   console.timeEnd("jpg");
   return imgs;
@@ -80,7 +80,7 @@ export const renderJpegs = async (
 export const renderPngs = async (
   renders: string[],
   config: DeckConfig,
-  styles?: string
+  styles?: string,
 ) => {
   console.time("png");
   const imgs = await renderImages(renders, config, { type: "png" }, styles);
@@ -93,7 +93,7 @@ const renderImages = async (
   renders: string[],
   config: DeckConfig,
   options?: ScreenshotOptions,
-  styles?: string
+  styles?: string,
 ) => {
   const { width, height } = config;
   const clip = { x: 0, y: 0, width, height };
