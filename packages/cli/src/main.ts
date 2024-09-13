@@ -81,7 +81,7 @@ const main = async (options: BuildOptions) => {
   // Do work
   try {
     const output = await intercept(
-      async () => await buildDir(dir, options.proof, options.decks)
+      async () => await buildDir(dir, options.proof, options.decks),
     );
 
     spinner.stop({

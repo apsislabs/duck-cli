@@ -5,6 +5,17 @@
   "license": "MIT",
   "workspaces": [
     "packages/duck",
-    "packages/create-duck"
-  ]
+    "packages/create-duck",
+    "packages/cli"
+  ],
+  "devDependencies": {
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,json,md}": "prettier --write"
+  },
+  "scripts": {
+    "prepare": "husky"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@duck/cli",
+  "name": "create-duck",
   "version": "2.0.0-beta1",
   "main": "dist/main.js",
   "scripts": {
@@ -12,21 +12,11 @@
     "prettier": "prettier -w \"src/**/*.{ts,js}\""
   },
   "type": "module",
-  "bin": {
-    "duck": "dist/main.js"
-  },
   "author": "Apsis Labs",
   "license": "MIT",
-  "dependencies": {
-    "@duck/duck": "file:../duck",
-    "capture-console": "^1.0.2",
-    "commander": "^12.1.0",
-    "nanospinner": "^1.1.0",
-    "picocolors": "^1.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/capture-console": "^1.0.5",
     "@types/node": "^22.5.2",
     "prettier": "^3.3.3",
     "rollup": "^4.21.2",
